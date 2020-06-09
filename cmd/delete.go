@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"os"
 	"strings"
 
 	"github.com/oracle/oci-go-sdk/common"
@@ -40,21 +41,26 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 
+		region, _ := cmd.Flags().GetString("region")
 		provider := common.DefaultConfigProvider()
 		client, err := resourcemanager.NewResourceManagerClientWithConfigurationProvider(provider)
 		helpers.FatalIfError(err)
 
 		ctx := context.Background()
 
-		stackToDelete := getStackInfo("StackID")
-		fmt.Println(stackToDelete)
+		//stackToDelete := getStackInfo("StackID")
+		//fmt.Println(stackToDelete)
+		createDestroyJob(ctx, provider, client, "ocid1.ormstack.oc1.iad.aaaaaaaarrxefa7ogac7gu5fstm5fniblunh6gvzgtpezjkhheig3afdw67q", region)
 
-		deleteStack(ctx, stackToDelete, client)
+		//deleteStack(ctx, stackToDelete, client)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(deleteCmd)
+
+	deleteCmd.Flags().StringP("region", "r", "", "The region to deploy to")
+	deleteCmd.MarkFlagRequired("region")
 
 	// Here you will define your flags and configuration settings.
 
@@ -68,19 +74,41 @@ func init() {
 }
 
 func deleteStack(ctx context.Context, stackID string, client resourcemanager.ResourceManagerClient) {
+
 	req := resourcemanager.DeleteStackRequest{
 		StackId: common.String(stackID),
 	}
 
-	// delete a resource manager stack
 	_, err := client.DeleteStack(ctx, req)
 	helpers.FatalIfError(err)
 
 	fmt.Println("Stack deletion")
 }
 
+func createDestroyJob(ctx context.Context, provider common.ConfigurationProvider, client resourcemanager.ResourceManagerClient, stackID string, region string) string {
+
+	jobReq := resourcemanager.CreateJobRequest{
+		CreateJobDetails: resourcemanager.CreateJobDetails{
+			StackId:   common.String(stackID),
+			Operation: "DESTROY",
+			JobOperationDetails: resourcemanager.CreateDestroyJobOperationDetails{
+				ExecutionPlanStrategy: "AUTO_APPROVED",
+			},
+		},
+	}
+
+	jobResp, err := client.CreateJob(ctx, jobReq)
+
+	if err != nil {
+		fmt.Println("Submission of destroy job failed", err)
+		os.Exit(1)
+	}
+
+	fmt.Println("Destroy job creation completed")
+	return *jobResp.Job.Id
+}
+
 func getStackInfo(value string) string {
-	// Get substring after a string.
 
 	a := value + "="
 

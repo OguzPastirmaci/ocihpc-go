@@ -51,7 +51,7 @@ to quickly create a Cobra application.`,
 		ctx := context.Background()
 
 		stackID := createStack(ctx, provider, client, compartmentID, region, solution)
-		//applyJobID := createApplyJob(ctx, provider, client, stackID, region)
+		createApplyJob(ctx, provider, client, stackID, region)
 
 		writeStackInfo("StackID", stackID)
 	},
