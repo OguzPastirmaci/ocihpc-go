@@ -24,6 +24,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"strconv"
 
 	"github.com/oracle/oci-go-sdk/common"
 	"github.com/oracle/oci-go-sdk/example/helpers"
@@ -43,15 +44,25 @@ to quickly create a Cobra application.`,
 		solution, _ := cmd.Flags().GetString("solution")
 		region, _ := cmd.Flags().GetString("region")
 		compartmentID, _ := cmd.Flags().GetString("compartment-id")
+		nodeCount, _ := cmd.Flags().GetString("node-count")
+
+		if _, err := strconv.Atoi(nodeCount); err != nil {
+			fmt.Printf("\nNode count must be a number, you entered: %s\n", nodeCount)
+			os.Exit(1)
+		}
 
 		provider := common.DefaultConfigProvider()
 		client, err := resourcemanager.NewResourceManagerClientWithConfigurationProvider(provider)
+		if err != nil {
+			panic(err)
+		}
+
 		helpers.FatalIfError(err)
 
 		ctx := context.Background()
 
-		stackID := createStack(ctx, provider, client, compartmentID, region, solution)
-		createApplyJob(ctx, provider, client, stackID, region)
+		stackID := createStack(ctx, provider, client, compartmentID, region, solution, nodeCount)
+		//createApplyJob(ctx, provider, client, stackID, region)
 
 		writeStackInfo("StackID", stackID)
 	},
@@ -68,14 +79,17 @@ func init() {
 
 	deployCmd.Flags().StringP("solution", "s", "", "Name of the solution you want to deploy.")
 	deployCmd.MarkFlagRequired("solution")
+
+	deployCmd.Flags().StringP("node-count", "n", "", "Number of nodes to deploy.")
 }
 
-func createStack(ctx context.Context, provider common.ConfigurationProvider, client resourcemanager.ResourceManagerClient, compartment string, region, solution string) string {
+func createStack(ctx context.Context, provider common.ConfigurationProvider, client resourcemanager.ResourceManagerClient, compartment string, region, solution string, nodeCount string) string {
 	stackName := fmt.Sprintf("%s-%s", solution, helpers.GetRandomString(4))
 	//tenancyOcid, _ := provider.TenancyOCID()
 	//compartmentID = os.Getenv("OCI_COMPARTMENT_ID")
 	//region, _ := common.String(region)
 
+	// Base64 the zip file
 	zipFilePath := pwd() + "/" + solution + ".zip"
 	f, _ := os.Open(zipFilePath)
 	reader := bufio.NewReader(f)
@@ -91,6 +105,18 @@ func createStack(ctx context.Context, provider common.ConfigurationProvider, cli
 	var config map[string]string
 	if err := json.NewDecoder(file).Decode(&config); err != nil {
 		log.Fatal(err)
+	}
+
+	// if node count was entered, update the map
+
+	_, ok := config["node_count"]
+	if ok {
+		if len(nodeCount) > 0 {
+			config["node_count"] = nodeCount
+			fmt.Println("Changing node count.")
+		}
+	} else {
+		fmt.Printf("Changing the node count is not supported with the solution %s, deploying with defaults.", solution)
 	}
 
 	req := resourcemanager.CreateStackRequest{
@@ -114,13 +140,13 @@ func createStack(ctx context.Context, provider common.ConfigurationProvider, cli
 		os.Exit(1)
 	}
 
-	fmt.Println("Stack creation completed")
 	return *stackResp.Stack.Id
+
 }
 
 func createApplyJob(ctx context.Context, provider common.ConfigurationProvider, client resourcemanager.ResourceManagerClient, stackID string, region string) string {
 
-	jobReq := resourcemanager.CreateJobRequest{
+	applyJobReq := resourcemanager.CreateJobRequest{
 		CreateJobDetails: resourcemanager.CreateJobDetails{
 			StackId:   common.String(stackID),
 			Operation: "APPLY",
@@ -130,29 +156,35 @@ func createApplyJob(ctx context.Context, provider common.ConfigurationProvider, 
 		},
 	}
 
-	jobResp, err := client.CreateJob(ctx, jobReq)
+	applyJobResp, err := client.CreateJob(ctx, applyJobReq)
 
 	if err != nil {
 		fmt.Println("Submission of apply job failed", err)
 		os.Exit(1)
 	}
 
-	fmt.Println("Apply job creation completed")
-	return *jobResp.Job.Id
-}
+	//fmt.Println("Apply job creation completed")
 
-func writeStackInfo(key string, value string) {
+	/*
+		fmt.Printf("Stack ID of the apply job is: %s\n", stackID)
+		fmt.Printf("Job ID of the apply job is: %s\n", *applyJobResp.Id)
+		fmt.Printf("Lifecycle state of the apply job is: %s\n", applyJobResp.LifecycleState)
+		fmt.Println("Waiting for 30 seconds before checking the state again")
+		time.Sleep(30 * time.Second)
+		fmt.Printf("Lifecycle state of the apply job is: %s\n", applyJobResp.LifecycleState)
+	*/
 
-	in := fmt.Sprintf("%s"+"="+"%s\n", key, value)
-
-	f, err := os.OpenFile("stack.info", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-	if err != nil {
-		log.Fatal(err)
-	}
-	if _, err := f.Write([]byte(in)); err != nil {
-		log.Fatal(err)
-	}
-	if err := f.Close(); err != nil {
-		log.Fatal(err)
-	}
+	/*
+		for {
+			applyJobStatus := jobResp.LifecycleState
+			fmt.Printf("Current job status: %s\n", applyJobStatus)
+			//fmt.Printf("Current job status: %s\n", *jobResp.LifecycleState)
+			time.Sleep(15 * time.Second)
+			if applyJobStatus == "SUCCEEDED" || applyJobStatus == "FAILED" {
+				fmt.Printf("Apply finished with status: %s", applyJobStatus)
+				break
+			}
+		}
+	*/
+	return *applyJobResp.Job.Id
 }

@@ -18,10 +18,8 @@ package cmd
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
-	"log"
 	"os"
-	"strings"
+	"time"
 
 	"github.com/oracle/oci-go-sdk/common"
 	"github.com/oracle/oci-go-sdk/example/helpers"
@@ -29,7 +27,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// deleteCmd represents the delete command
 var deleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: "A brief description of your command",
@@ -43,16 +40,18 @@ to quickly create a Cobra application.`,
 
 		region, _ := cmd.Flags().GetString("region")
 		provider := common.DefaultConfigProvider()
+		solution, _ := cmd.Flags().GetString("solution")
 		client, err := resourcemanager.NewResourceManagerClientWithConfigurationProvider(provider)
+		if err != nil {
+			panic(err)
+		}
 		helpers.FatalIfError(err)
 
 		ctx := context.Background()
+		stackID := getStackInfo("StackID")
 
-		//stackToDelete := getStackInfo("StackID")
-		//fmt.Println(stackToDelete)
-		createDestroyJob(ctx, provider, client, "ocid1.ormstack.oc1.iad.aaaaaaaarrxefa7ogac7gu5fstm5fniblunh6gvzgtpezjkhheig3afdw67q", region)
+		createDestroyJob(ctx, provider, client, stackID, region, solution)
 
-		//deleteStack(ctx, stackToDelete, client)
 	},
 }
 
@@ -62,18 +61,11 @@ func init() {
 	deleteCmd.Flags().StringP("region", "r", "", "The region to deploy to")
 	deleteCmd.MarkFlagRequired("region")
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// deleteCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// deleteCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	deleteCmd.Flags().StringP("solution", "s", "", "Solution to delete")
+	deleteCmd.MarkFlagRequired("solution")
 }
 
-func deleteStack(ctx context.Context, stackID string, client resourcemanager.ResourceManagerClient) {
+func deleteStack(ctx context.Context, stackID string, client resourcemanager.ResourceManagerClient, solution string) {
 
 	req := resourcemanager.DeleteStackRequest{
 		StackId: common.String(stackID),
@@ -85,9 +77,9 @@ func deleteStack(ctx context.Context, stackID string, client resourcemanager.Res
 	fmt.Println("Stack deletion")
 }
 
-func createDestroyJob(ctx context.Context, provider common.ConfigurationProvider, client resourcemanager.ResourceManagerClient, stackID string, region string) string {
+func createDestroyJob(ctx context.Context, provider common.ConfigurationProvider, client resourcemanager.ResourceManagerClient, stackID string, region string, solution string) string {
 
-	jobReq := resourcemanager.CreateJobRequest{
+	destroyJobReq := resourcemanager.CreateJobRequest{
 		CreateJobDetails: resourcemanager.CreateJobDetails{
 			StackId:   common.String(stackID),
 			Operation: "DESTROY",
@@ -97,35 +89,84 @@ func createDestroyJob(ctx context.Context, provider common.ConfigurationProvider
 		},
 	}
 
-	jobResp, err := client.CreateJob(ctx, jobReq)
+	destroyJobResp, err := client.CreateJob(ctx, destroyJobReq)
+	//fmt.Printf("Job ID of the destroy job is: %s\n", *destroyJobResp.Id)
 
 	if err != nil {
 		fmt.Println("Submission of destroy job failed", err)
 		os.Exit(1)
 	}
 
-	fmt.Println("Destroy job creation completed")
-	return *jobResp.Job.Id
-}
-
-func getStackInfo(value string) string {
-
-	a := value + "="
-
-	content, err := ioutil.ReadFile("stack.info")
-	if err != nil {
-		log.Fatal(err)
+	jobLifecycle := resourcemanager.GetJobRequest{
+		JobId: destroyJobResp.Id,
 	}
 
-	text := string(content)
+	start := time.Now()
 
-	pos := strings.LastIndex(text, a)
-	if pos == -1 {
-		return ""
+	for {
+		elapsed := int(time.Since(start).Seconds())
+		readResp, err := client.GetJob(ctx, jobLifecycle)
+
+		if err != nil {
+			fmt.Println("Destroy job failed", err)
+			os.Exit(1)
+		}
+
+		fmt.Printf("Deleting solution: %s [%dmin %dsec]\n", solution, elapsed/60, elapsed%60)
+		time.Sleep(15 * time.Second)
+		if readResp.LifecycleState == "SUCCEEDED" || readResp.LifecycleState == "FAILED" {
+			deleteStack(ctx, stackID, client, solution)
+			fmt.Printf("Delete complete successfully")
+			break
+		} else if readResp.LifecycleState == "FAILED" {
+			fmt.Printf("Delete failed")
+			break
+		}
 	}
-	adjustedPos := pos + len(a)
-	if adjustedPos >= len(text) {
-		return ""
-	}
-	return text[adjustedPos:len(text)]
+
+	return *destroyJobResp.Job.Id
+
+	/*
+	   	readResp, err := client.GetJob(ctx, jobLifecycle)
+
+	   	fmt.Println(readResp.LifecycleState)
+	   	time.Sleep(15 * time.Second)
+	   	fmt.Println(readResp2.LifecycleState)
+
+	   	return *destroyJobResp.Job.Id
+	   }
+	*/
+	/*
+	   	getJobLifecycle := func() (interface{}, error) {
+	   		request := resourcemanager.GetJobRequest{
+	   			JobId: destroyJobResp.Id,
+	   		}
+
+	   		readResp, err := client.GetJob(ctx, request)
+
+	   		if err != nil {
+	   			return nil, err
+	   		}
+
+	   		return readResp.LifecycleState, err
+	   	}
+
+	   	fmt.Println(getJobLifecycle())
+	   	time.Sleep(15 * time.Second)
+	   	fmt.Println(getJobLifecycle())
+	   	return *destroyJobResp.Job.Id
+	   }
+
+	   /*
+	   	for {
+	   		elapsed := int(time.Since(start).Seconds())
+	   		destroyJobStatus := destroyJobResp.LifecycleState
+	   		fmt.Printf("Current job status: %s [%dmin %dsec]\n", destroyJobStatus, elapsed/60, elapsed%60)
+	   		time.Sleep(15 * time.Second)
+	   		if destroyJobStatus == "SUCCEEDED" || destroyJobStatus == "FAILED" {
+	   			fmt.Printf("Delete finished with status: %s", destroyJobStatus)
+	   			break
+	   		}
+	   	}
+	*/
 }

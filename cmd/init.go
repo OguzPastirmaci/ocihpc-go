@@ -17,10 +17,6 @@ package cmd
 
 import (
 	"fmt"
-	"io"
-	"log"
-	"net/http"
-	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -47,32 +43,6 @@ func init() {
 
 	initCmd.Flags().StringP("solution", "s", "", "Name of the solution you want to deploy.")
 	initCmd.MarkFlagRequired("solution")
-}
-
-func pwd() string {
-	dir, err := os.Getwd()
-	if err != nil {
-		log.Fatal(err)
-	}
-	return dir
-}
-
-func downloadFile(filepath string, url string) error {
-
-	resp, err := http.Get(url)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-
-	out, err := os.Create(filepath)
-	if err != nil {
-		return err
-	}
-	defer out.Close()
-
-	_, err = io.Copy(out, resp.Body)
-	return err
 }
 
 func solutionInit(solution_name string) {
