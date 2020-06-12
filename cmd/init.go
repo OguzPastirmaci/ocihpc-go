@@ -1,18 +1,5 @@
-/*
-Copyright © 2020 NAME HERE <EMAIL ADDRESS>
+// This software is licensed under the Universal Permissive License (UPL) 1.0 as shown at https://oss.oracle.com/licenses/upl
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
 package cmd
 
 import (
@@ -45,23 +32,23 @@ func init() {
 	initCmd.MarkFlagRequired("solution")
 }
 
-func solutionInit(solution_name string) {
+func solutionInit(solution string) {
 
-	configUrl := fmt.Sprintf("https://raw.githubusercontent.com/oracle-quickstart/oci-ocihpc/master/packages/%s/config.json", solution_name)
-	zipUrl := fmt.Sprintf("https://github.com/oracle-quickstart/oci-ocihpc/raw/master/packages/%s/%s.zip", solution_name, solution_name)
+	configURL := fmt.Sprintf("https://raw.githubusercontent.com/oracle-quickstart/oci-ocihpc/master/packages/%s/config.json", solution)
+	zipURL := fmt.Sprintf("https://github.com/oracle-quickstart/oci-ocihpc/raw/master/packages/%s/%s.zip", solution, solution)
 
 	configFilePath := pwd() + "/config.json"
-	zipFilePath := pwd() + "/" + solution_name + ".zip"
+	zipFilePath := pwd() + "/" + solution + ".zip"
 
-	errConfig := downloadFile(configFilePath, configUrl)
+	errConfig := downloadFile(configFilePath, configURL)
 	if errConfig != nil {
 		panic(errConfig)
 	}
 
-	errZip := downloadFile(zipFilePath, zipUrl)
+	errZip := downloadFile(zipFilePath, zipURL)
 	if errZip != nil {
 		panic(errZip)
 	}
-	fmt.Println("\n\nDownloaded solution " + solution_name)
+	fmt.Println("\n\nDownloaded solution " + solution)
 	fmt.Printf("\nIMPORTANT: Edit the contents of the %s file before running ocihpc deploy command\n\n", configFilePath)
 }

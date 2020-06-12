@@ -1,53 +1,27 @@
+// This software is licensed under the Universal Permissive License (UPL) 1.0 as shown at https://oss.oracle.com/licenses/upl
+
 package cmd
 
 import (
-	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
-	"strings"
+
+	"github.com/jeffail/gabs"
 )
 
-func writeStackInfo(key string, value string) {
+func getJSON(filename string, value string) string {
 
-	in := fmt.Sprintf("%s"+"="+"%s", key, value)
-
-	f, err := os.OpenFile(".stack.info", os.O_CREATE|os.O_WRONLY, 0644)
-	defer f.Close()
-
-	if err != nil {
-		log.Fatal(err)
-	}
-	if _, err := f.Write([]byte(in)); err != nil {
-		log.Fatal(err)
-	}
-	if err := f.Close(); err != nil {
-		log.Fatal(err)
-	}
-}
-
-func getStackInfo(value string) string {
-
-	a := value + "="
-
-	content, err := ioutil.ReadFile(".stack.info")
+	data, err := ioutil.ReadFile(filename)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	text := string(content)
-
-	pos := strings.LastIndex(text, a)
-	if pos == -1 {
-		return ""
-	}
-	adjustedPos := pos + len(a)
-	if adjustedPos >= len(text) {
-		return ""
-	}
-	return text[adjustedPos:len(text)]
+	jsonParsed, err := gabs.ParseJSON(data)
+	result := jsonParsed.Path(value).Data().(string)
+	return result
 }
 
 func pwd() string {
@@ -94,3 +68,10 @@ func logsFrom() {
 
 }
 */
+
+func createStackInfo(filename string, stackID string, region string) {
+	stackInfo := gabs.New()
+	stackInfo.Set(stackID, "stack_info", "stackID")
+	stackInfo.Set(region, "stack_info", "region")
+	ioutil.WriteFile(filename, []byte(stackInfo.StringIndent("", "  ")), 0644)
+}

@@ -1,18 +1,5 @@
-/*
-Copyright © 2020 NAME HERE <EMAIL ADDRESS>
+// This software is licensed under the Universal Permissive License (UPL) 1.0 as shown at https://oss.oracle.com/licenses/upl
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
 package cmd
 
 import (
@@ -57,20 +44,11 @@ to quickly create a Cobra application.`,
 		if err != nil {
 			panic(err)
 		}
-
 		helpers.FatalIfError(err)
-
 		ctx := context.Background()
 
 		stackID := createStack(ctx, provider, client, compartmentID, region, solution, nodeCount)
-
-		writeStackInfo("StackID", stackID)
-		//writeStackInfo("Region", region)
-
-		stackInfo := gabs.New()
-		stackInfo.Set(stackID, "stack_info", "stackID")
-		stackInfo.Set(region, "stack_info", "region")
-		fmt.Println(stackInfo.StringIndent("", "  "))
+		createStackInfo(".solution.json", stackID, region)
 
 		createApplyJob(ctx, provider, client, stackID, region, solution)
 
@@ -193,8 +171,9 @@ func createApplyJob(ctx context.Context, provider common.ConfigurationProvider, 
 			os.Exit(1)
 		}
 
-		fmt.Printf("Deploying solution: %s [ %dmin %dsec ]\n", solution, elapsed/60, elapsed%60)
+		fmt.Printf("Deploying solution: %s [%dmin %dsec]\n", solution, elapsed/60, elapsed%60)
 		time.Sleep(10 * time.Second)
+
 		if readResp.LifecycleState == "SUCCEEDED" {
 			fmt.Printf("Deployment completed successfully\n")
 
@@ -203,10 +182,13 @@ func createApplyJob(ctx context.Context, provider common.ConfigurationProvider, 
 			}
 			tfStateResp, _ := client.GetJobTfState(ctx, tfStateReq)
 			body, _ := ioutil.ReadAll(tfStateResp.Content)
-			jsonParsed, _ := gabs.ParseJSON([]byte(string(body)))
+			tfStateParsed, err := gabs.ParseJSON([]byte(string(body)))
+			if err != nil {
+				log.Fatal("Error:", err)
+			}
 			var bastionIP string
-			bastionIP = jsonParsed.Path(".outputs.bastion.value").Data().(string)
-			fmt.Printf("\nYou can connect to your head node using the command: ssh opc@%s -i <location of the private key you used>", bastionIP)
+			bastionIP = tfStateParsed.Path("outputs.bastion.value").Data().(string)
+			fmt.Printf("\nYou can connect to your head node using the command: ssh opc@%s -i <location of the private key you used>\n", bastionIP)
 			break
 		} else if readResp.LifecycleState == "FAILED" {
 			fmt.Printf("\nDeployment failed. Please note there might be some resources already created.\n")
