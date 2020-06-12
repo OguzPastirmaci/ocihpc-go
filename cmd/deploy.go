@@ -75,7 +75,7 @@ func createStack(ctx context.Context, provider common.ConfigurationProvider, cli
 	//compartmentID = os.Getenv("OCI_COMPARTMENT_ID")
 
 	// Base64 the zip file
-	zipFilePath := pwd() + "/" + solution + ".zip"
+	zipFilePath := getWd() + "/" + solution + ".zip"
 	f, _ := os.Open(zipFilePath)
 	reader := bufio.NewReader(f)
 	content, _ := ioutil.ReadAll(reader)

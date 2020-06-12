@@ -37,8 +37,8 @@ func solutionInit(solution string) {
 	configURL := fmt.Sprintf("https://raw.githubusercontent.com/oracle-quickstart/oci-ocihpc/master/packages/%s/config.json", solution)
 	zipURL := fmt.Sprintf("https://github.com/oracle-quickstart/oci-ocihpc/raw/master/packages/%s/%s.zip", solution, solution)
 
-	configFilePath := pwd() + "/config.json"
-	zipFilePath := pwd() + "/" + solution + ".zip"
+	configFilePath := getWd() + "/config.json"
+	zipFilePath := getWd() + "/" + solution + ".zip"
 
 	errConfig := downloadFile(configFilePath, configURL)
 	if errConfig != nil {

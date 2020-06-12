@@ -24,7 +24,7 @@ func getJSON(filename string, value string) string {
 	return result
 }
 
-func pwd() string {
+func getWd() string {
 	dir, err := os.Getwd()
 	if err != nil {
 		log.Fatal(err)
