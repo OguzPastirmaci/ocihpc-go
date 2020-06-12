@@ -12,9 +12,11 @@ import (
 
 func writeStackInfo(key string, value string) {
 
-	in := fmt.Sprintf("%s"+"="+"%s\n", key, value)
+	in := fmt.Sprintf("%s"+"="+"%s", key, value)
 
-	f, err := os.OpenFile("stack.info", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	f, err := os.OpenFile(".stack.info", os.O_CREATE|os.O_WRONLY, 0644)
+	defer f.Close()
+
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -30,7 +32,7 @@ func getStackInfo(value string) string {
 
 	a := value + "="
 
-	content, err := ioutil.ReadFile("stack.info")
+	content, err := ioutil.ReadFile(".stack.info")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -73,3 +75,22 @@ func downloadFile(filepath string, url string) error {
 	_, err = io.Copy(out, resp.Body)
 	return err
 }
+
+/*
+func logsFrom() {
+
+	now := time.Now()
+	timeRange = now.Add(-5 * time.Minute)
+
+	fmt.Println(timeRange)
+
+	tf := resourcemanager.GetJobLogsRequest{
+		JobId:                         applyJobResp.Id,
+		TimestampGreaterThanOrEqualTo: timeRange,
+	}
+
+	readResp2, err := client.GetJobLogs(ctx, tf)
+	fmt.Println(readResp2)
+
+}
+*/

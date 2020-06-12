@@ -38,7 +38,6 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		region, _ := cmd.Flags().GetString("region")
 		provider := common.DefaultConfigProvider()
 		solution, _ := cmd.Flags().GetString("solution")
 		client, err := resourcemanager.NewResourceManagerClientWithConfigurationProvider(provider)
@@ -50,16 +49,12 @@ to quickly create a Cobra application.`,
 		ctx := context.Background()
 		stackID := getStackInfo("StackID")
 
-		createDestroyJob(ctx, provider, client, stackID, region, solution)
-
+		createDestroyJob(ctx, provider, client, stackID, solution)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(deleteCmd)
-
-	deleteCmd.Flags().StringP("region", "r", "", "The region to deploy to")
-	deleteCmd.MarkFlagRequired("region")
 
 	deleteCmd.Flags().StringP("solution", "s", "", "Solution to delete")
 	deleteCmd.MarkFlagRequired("solution")
@@ -73,11 +68,9 @@ func deleteStack(ctx context.Context, stackID string, client resourcemanager.Res
 
 	_, err := client.DeleteStack(ctx, req)
 	helpers.FatalIfError(err)
-
-	fmt.Println("Stack deletion")
 }
 
-func createDestroyJob(ctx context.Context, provider common.ConfigurationProvider, client resourcemanager.ResourceManagerClient, stackID string, region string, solution string) string {
+func createDestroyJob(ctx context.Context, provider common.ConfigurationProvider, client resourcemanager.ResourceManagerClient, stackID string, solution string) string {
 
 	destroyJobReq := resourcemanager.CreateJobRequest{
 		CreateJobDetails: resourcemanager.CreateJobDetails{
@@ -90,10 +83,9 @@ func createDestroyJob(ctx context.Context, provider common.ConfigurationProvider
 	}
 
 	destroyJobResp, err := client.CreateJob(ctx, destroyJobReq)
-	//fmt.Printf("Job ID of the destroy job is: %s\n", *destroyJobResp.Id)
 
 	if err != nil {
-		fmt.Println("Submission of destroy job failed", err)
+		fmt.Println("Delete failed with the following errors:\n\n", err)
 		os.Exit(1)
 	}
 
@@ -108,15 +100,16 @@ func createDestroyJob(ctx context.Context, provider common.ConfigurationProvider
 		readResp, err := client.GetJob(ctx, jobLifecycle)
 
 		if err != nil {
-			fmt.Println("Destroy job failed", err)
+			fmt.Println("Delete failed with the following errors:\n\n", err)
 			os.Exit(1)
 		}
 
-		fmt.Printf("Deleting solution: %s [%dmin %dsec]\n", solution, elapsed/60, elapsed%60)
+		fmt.Printf("Deleting solution: %s [ %dmin %dsec ]\n", solution, elapsed/60, elapsed%60)
 		time.Sleep(15 * time.Second)
-		if readResp.LifecycleState == "SUCCEEDED" || readResp.LifecycleState == "FAILED" {
+		if readResp.LifecycleState == "SUCCEEDED" {
 			deleteStack(ctx, stackID, client, solution)
-			fmt.Printf("Delete complete successfully")
+			fmt.Printf("Delete completed successfully")
+			os.Remove("stack.info")
 			break
 		} else if readResp.LifecycleState == "FAILED" {
 			fmt.Printf("Delete failed")
@@ -125,48 +118,4 @@ func createDestroyJob(ctx context.Context, provider common.ConfigurationProvider
 	}
 
 	return *destroyJobResp.Job.Id
-
-	/*
-	   	readResp, err := client.GetJob(ctx, jobLifecycle)
-
-	   	fmt.Println(readResp.LifecycleState)
-	   	time.Sleep(15 * time.Second)
-	   	fmt.Println(readResp2.LifecycleState)
-
-	   	return *destroyJobResp.Job.Id
-	   }
-	*/
-	/*
-	   	getJobLifecycle := func() (interface{}, error) {
-	   		request := resourcemanager.GetJobRequest{
-	   			JobId: destroyJobResp.Id,
-	   		}
-
-	   		readResp, err := client.GetJob(ctx, request)
-
-	   		if err != nil {
-	   			return nil, err
-	   		}
-
-	   		return readResp.LifecycleState, err
-	   	}
-
-	   	fmt.Println(getJobLifecycle())
-	   	time.Sleep(15 * time.Second)
-	   	fmt.Println(getJobLifecycle())
-	   	return *destroyJobResp.Job.Id
-	   }
-
-	   /*
-	   	for {
-	   		elapsed := int(time.Since(start).Seconds())
-	   		destroyJobStatus := destroyJobResp.LifecycleState
-	   		fmt.Printf("Current job status: %s [%dmin %dsec]\n", destroyJobStatus, elapsed/60, elapsed%60)
-	   		time.Sleep(15 * time.Second)
-	   		if destroyJobStatus == "SUCCEEDED" || destroyJobStatus == "FAILED" {
-	   			fmt.Printf("Delete finished with status: %s", destroyJobStatus)
-	   			break
-	   		}
-	   	}
-	*/
 }

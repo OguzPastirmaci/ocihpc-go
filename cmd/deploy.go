@@ -25,14 +25,15 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"time"
 
+	"github.com/jeffail/gabs"
 	"github.com/oracle/oci-go-sdk/common"
 	"github.com/oracle/oci-go-sdk/example/helpers"
 	"github.com/oracle/oci-go-sdk/resourcemanager"
 	"github.com/spf13/cobra"
 )
 
-// deployCmd represents the deploy command
 var deployCmd = &cobra.Command{
 	Use:   "deploy",
 	Short: "A brief description of your command",
@@ -62,9 +63,17 @@ to quickly create a Cobra application.`,
 		ctx := context.Background()
 
 		stackID := createStack(ctx, provider, client, compartmentID, region, solution, nodeCount)
-		//createApplyJob(ctx, provider, client, stackID, region)
 
 		writeStackInfo("StackID", stackID)
+		//writeStackInfo("Region", region)
+
+		stackInfo := gabs.New()
+		stackInfo.Set(stackID, "stack_info", "stackID")
+		stackInfo.Set(region, "stack_info", "region")
+		fmt.Println(stackInfo.StringIndent("", "  "))
+
+		createApplyJob(ctx, provider, client, stackID, region, solution)
+
 	},
 }
 
@@ -75,7 +84,6 @@ func init() {
 	deployCmd.MarkFlagRequired("compartment-id")
 
 	deployCmd.Flags().StringP("region", "r", "", "The region to deploy to")
-	deployCmd.MarkFlagRequired("region")
 
 	deployCmd.Flags().StringP("solution", "s", "", "Name of the solution you want to deploy.")
 	deployCmd.MarkFlagRequired("solution")
@@ -83,11 +91,10 @@ func init() {
 	deployCmd.Flags().StringP("node-count", "n", "", "Number of nodes to deploy.")
 }
 
-func createStack(ctx context.Context, provider common.ConfigurationProvider, client resourcemanager.ResourceManagerClient, compartment string, region, solution string, nodeCount string) string {
+func createStack(ctx context.Context, provider common.ConfigurationProvider, client resourcemanager.ResourceManagerClient, compartment string, region string, solution string, nodeCount string) string {
 	stackName := fmt.Sprintf("%s-%s", solution, helpers.GetRandomString(4))
 	//tenancyOcid, _ := provider.TenancyOCID()
 	//compartmentID = os.Getenv("OCI_COMPARTMENT_ID")
-	//region, _ := common.String(region)
 
 	// Base64 the zip file
 	zipFilePath := pwd() + "/" + solution + ".zip"
@@ -107,16 +114,24 @@ func createStack(ctx context.Context, provider common.ConfigurationProvider, cli
 		log.Fatal(err)
 	}
 
-	// if node count was entered, update the map
-
-	_, ok := config["node_count"]
-	if ok {
+	// node count override
+	_, nc := config["node_count"]
+	if nc {
 		if len(nodeCount) > 0 {
 			config["node_count"] = nodeCount
 			fmt.Println("Changing node count.")
 		}
 	} else {
-		fmt.Printf("Changing the node count is not supported with the solution %s, deploying with defaults.", solution)
+		fmt.Printf("\nChanging the node count is not supported with the solution %s, deploying with defaults.\n", solution)
+	}
+
+	// region override
+	_, r := config["region"]
+	if r {
+		if len(region) > 0 {
+			config["region"] = region
+			fmt.Println("Changing region.")
+		}
 	}
 
 	req := resourcemanager.CreateStackRequest{
@@ -144,7 +159,7 @@ func createStack(ctx context.Context, provider common.ConfigurationProvider, cli
 
 }
 
-func createApplyJob(ctx context.Context, provider common.ConfigurationProvider, client resourcemanager.ResourceManagerClient, stackID string, region string) string {
+func createApplyJob(ctx context.Context, provider common.ConfigurationProvider, client resourcemanager.ResourceManagerClient, stackID string, region string, solution string) string {
 
 	applyJobReq := resourcemanager.CreateJobRequest{
 		CreateJobDetails: resourcemanager.CreateJobDetails{
@@ -159,32 +174,46 @@ func createApplyJob(ctx context.Context, provider common.ConfigurationProvider, 
 	applyJobResp, err := client.CreateJob(ctx, applyJobReq)
 
 	if err != nil {
-		fmt.Println("Submission of apply job failed", err)
+		fmt.Println("Deployment failed with the following errors:\n\n", err)
 		os.Exit(1)
 	}
 
-	//fmt.Println("Apply job creation completed")
+	jobLifecycle := resourcemanager.GetJobRequest{
+		JobId: applyJobResp.Id,
+	}
 
-	/*
-		fmt.Printf("Stack ID of the apply job is: %s\n", stackID)
-		fmt.Printf("Job ID of the apply job is: %s\n", *applyJobResp.Id)
-		fmt.Printf("Lifecycle state of the apply job is: %s\n", applyJobResp.LifecycleState)
-		fmt.Println("Waiting for 30 seconds before checking the state again")
-		time.Sleep(30 * time.Second)
-		fmt.Printf("Lifecycle state of the apply job is: %s\n", applyJobResp.LifecycleState)
-	*/
+	start := time.Now()
 
-	/*
-		for {
-			applyJobStatus := jobResp.LifecycleState
-			fmt.Printf("Current job status: %s\n", applyJobStatus)
-			//fmt.Printf("Current job status: %s\n", *jobResp.LifecycleState)
-			time.Sleep(15 * time.Second)
-			if applyJobStatus == "SUCCEEDED" || applyJobStatus == "FAILED" {
-				fmt.Printf("Apply finished with status: %s", applyJobStatus)
-				break
-			}
+	for {
+		elapsed := int(time.Since(start).Seconds())
+		readResp, err := client.GetJob(ctx, jobLifecycle)
+
+		if err != nil {
+			fmt.Println("Deployment failed with the following errors:\n\n", err)
+			os.Exit(1)
 		}
-	*/
+
+		fmt.Printf("Deploying solution: %s [ %dmin %dsec ]\n", solution, elapsed/60, elapsed%60)
+		time.Sleep(10 * time.Second)
+		if readResp.LifecycleState == "SUCCEEDED" {
+			fmt.Printf("Deployment completed successfully\n")
+
+			tfStateReq := resourcemanager.GetJobTfStateRequest{
+				JobId: applyJobResp.Id,
+			}
+			tfStateResp, _ := client.GetJobTfState(ctx, tfStateReq)
+			body, _ := ioutil.ReadAll(tfStateResp.Content)
+			jsonParsed, _ := gabs.ParseJSON([]byte(string(body)))
+			var bastionIP string
+			bastionIP = jsonParsed.Path(".outputs.bastion.value").Data().(string)
+			fmt.Printf("\nYou can connect to your head node using the command: ssh opc@%s -i <location of the private key you used>", bastionIP)
+			break
+		} else if readResp.LifecycleState == "FAILED" {
+			fmt.Printf("\nDeployment failed. Please note there might be some resources already created.\n")
+			fmt.Printf("\nRun ocihpc delete %s to delete those resources.", solution)
+			break
+		}
+	}
+
 	return *applyJobResp.Job.Id
 }
