@@ -50,28 +50,14 @@ func downloadFile(filepath string, url string) error {
 	return err
 }
 
-/*
-func logsFrom() {
-
-	now := time.Now()
-	timeRange = now.Add(-5 * time.Minute)
-
-	fmt.Println(timeRange)
-
-	tf := resourcemanager.GetJobLogsRequest{
-		JobId:                         applyJobResp.Id,
-		TimestampGreaterThanOrEqualTo: timeRange,
-	}
-
-	readResp2, err := client.GetJobLogs(ctx, tf)
-	fmt.Println(readResp2)
-
-}
-*/
-
-func createStackInfo(filename string, stackID string, region string) {
+func addStackInfo(stackID string) {
 	stackInfo := gabs.New()
 	stackInfo.Set(stackID, "stack_info", "stackID")
-	stackInfo.Set(region, "stack_info", "region")
-	ioutil.WriteFile(filename, []byte(stackInfo.StringIndent("", "  ")), 0644)
+	ioutil.WriteFile(".stack_info.json", []byte(stackInfo.StringIndent("", "  ")), 0644)
+}
+
+func addJobInfo(jobID string) {
+	jobInfo := gabs.New()
+	jobInfo.Set(jobID, "job_info", "jobID")
+	ioutil.WriteFile(".job_info.json", []byte(jobInfo.StringIndent("", "  ")), 0644)
 }

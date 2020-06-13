@@ -15,18 +15,15 @@ import (
 )
 
 var deleteCmd = &cobra.Command{
-	Use:   "delete",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Use:     "delete",
+	Aliases: []string{"del", "dlt"},
+	Short:   "Delete a deployed stack",
+	Long: `
+Example command: ocihpc delete --stack ClusterNetwork`,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		provider := common.DefaultConfigProvider()
-		solution, _ := cmd.Flags().GetString("solution")
+		stack, _ := cmd.Flags().GetString("stack")
 		client, err := resourcemanager.NewResourceManagerClientWithConfigurationProvider(provider)
 		if err != nil {
 			panic(err)
@@ -34,20 +31,21 @@ to quickly create a Cobra application.`,
 		helpers.FatalIfError(err)
 
 		ctx := context.Background()
-		stackID := getJSON(".solution.json", "stack_info.stackID")
+		stackID := getJSON(".stack_info.json", "stack_info.stackID")
 
-		createDestroyJob(ctx, provider, client, stackID, solution)
+		createDestroyJob(ctx, provider, client, stackID, stack)
+
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(deleteCmd)
 
-	deleteCmd.Flags().StringP("solution", "s", "", "Solution to delete")
-	deleteCmd.MarkFlagRequired("solution")
+	deleteCmd.Flags().StringP("stack", "s", "", "Stack to delete")
+	deleteCmd.MarkFlagRequired("stack")
 }
 
-func deleteStack(ctx context.Context, stackID string, client resourcemanager.ResourceManagerClient, solution string) {
+func deleteStack(ctx context.Context, stackID string, client resourcemanager.ResourceManagerClient, stack string) {
 
 	req := resourcemanager.DeleteStackRequest{
 		StackId: common.String(stackID),
@@ -57,7 +55,7 @@ func deleteStack(ctx context.Context, stackID string, client resourcemanager.Res
 	helpers.FatalIfError(err)
 }
 
-func createDestroyJob(ctx context.Context, provider common.ConfigurationProvider, client resourcemanager.ResourceManagerClient, stackID string, solution string) string {
+func createDestroyJob(ctx context.Context, provider common.ConfigurationProvider, client resourcemanager.ResourceManagerClient, stackID string, stack string) string {
 
 	destroyJobReq := resourcemanager.CreateJobRequest{
 		CreateJobDetails: resourcemanager.CreateJobDetails{
@@ -80,7 +78,8 @@ func createDestroyJob(ctx context.Context, provider common.ConfigurationProvider
 		JobId: destroyJobResp.Id,
 	}
 
-	start := time.Now()
+	fmt.Println()
+	start := time.Now().Add(time.Second * -5)
 
 	for {
 		elapsed := int(time.Since(start).Seconds())
@@ -91,15 +90,15 @@ func createDestroyJob(ctx context.Context, provider common.ConfigurationProvider
 			os.Exit(1)
 		}
 
-		fmt.Printf("Deleting solution: %s [%dmin %dsec]\n", solution, elapsed/60, elapsed%60)
+		fmt.Printf("Deleting stack: %s [%dmin %dsec]\n", stack, elapsed/60, elapsed%60)
 		time.Sleep(15 * time.Second)
 		if readResp.LifecycleState == "SUCCEEDED" {
-			deleteStack(ctx, stackID, client, solution)
+			deleteStack(ctx, stackID, client, stack)
 			fmt.Printf("Delete completed successfully")
 			os.Remove("stack.info")
 			break
 		} else if readResp.LifecycleState == "FAILED" {
-			fmt.Printf("Delete failed")
+			fmt.Printf("\nDeployment failed. You can run 'ocihpc get logs' to get the logs of the failed job\n")
 			break
 		}
 	}

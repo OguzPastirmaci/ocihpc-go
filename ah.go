@@ -3,10 +3,9 @@
 
 // Example code for sending raw request to  Service API
 
-package example
+package main
 
 import (
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -17,9 +16,17 @@ import (
 )
 
 // ExampleRawRequest compose a request, sign it and send to server
-func getTFState(string jobId) {
+
+func main() {
+	getTFState()
+
+}
+
+func getTFState() {
 	// build the url
-	url := "https://resourcemanager.us-ashburn-1.oraclecloud.com/20180917/jobs/" + jobId + "tfState"
+
+	jobId := "ocid1.ormjob.oc1.iad.aaaaaaaakyzp3s46mec66fssuzfp5u7nzorgil2thyajpzrliwb7xxqt73dq"
+	url := "https://resourcemanager.us-ashburn-1.oraclecloud.com/20180917/jobs/" + jobId + "/logs"
 
 	// create request
 	request, err := http.NewRequest("GET", url, nil)
@@ -39,7 +46,7 @@ func getTFState(string jobId) {
 
 	client := http.Client{}
 
-	fmt.Println("send request")
+	//fmt.Println("send request")
 
 	// Execute the request
 	resp, err := client.Do(request)
@@ -47,11 +54,28 @@ func getTFState(string jobId) {
 
 	defer resp.Body.Close()
 
-	log.Println("response Status:", resp.Status)
-	log.Println("response Headers:", resp.Header)
+	//log.Println("response Status:", resp.Status)
+	//log.Println("response Headers:", resp.Header)
 
 	body, _ := ioutil.ReadAll(resp.Body)
-	log.Println("response Body:", string(body))
+	log.Println(string(body))
 
-	fmt.Println("receive response")
+	//fmt.Println("receive response")
 }
+
+/*
+func getTFLogs(ctx context.Context, provider common.ConfigurationProvider, client resourcemanager.ResourceManagerClient, jobID string) (string, error) {
+
+	tf := resourcemanager.GetJobLogsRequest{
+		JobId:                         &jobID,
+		TimestampGreaterThanOrEqualTo: &common.SDKTime{time.Now().Add(time.Second * -300)},
+	}
+
+	resp, err := client.GetJobLogs(ctx, tf)
+	helpers.FatalIfError(err)
+
+	fmt.Println(resp)
+
+	return resp.Items, err
+}
+*/

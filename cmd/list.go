@@ -13,13 +13,10 @@ import (
 
 var listCmd = &cobra.Command{
 	Use:   "list",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "List available stacks",
+	Long: `
+Example command: ocihpc list
+	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		url := "https://raw.githubusercontent.com/oracle-quickstart/oci-ocihpc/master/packages/catalog"
 		resp, err := http.Get(url)
@@ -35,7 +32,7 @@ to quickly create a Cobra application.`,
 
 		respString := string(respData)
 
-		fmt.Println("\nList of available packages:\n")
+		fmt.Printf("\nList of available stacks:\n")
 		fmt.Println(respString)
 		fmt.Println()
 	},
@@ -43,14 +40,4 @@ to quickly create a Cobra application.`,
 
 func init() {
 	rootCmd.AddCommand(listCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// listCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// listCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

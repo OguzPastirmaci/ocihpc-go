@@ -22,14 +22,14 @@ import (
 )
 
 var deployCmd = &cobra.Command{
-	Use:   "deploy",
-	Short: "A brief description of your command",
+	Use:     "deploy",
+	Aliases: []string{"create"},
+	Short:   "Deploy a stack",
 	Long: `
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+Example command: ocihpc deploy --stack ClusterNetwork --node-count 2 --region us-ashburn-1 --compartment-id ocid1.compartment.oc1..nus3q
+	`,
 	Run: func(cmd *cobra.Command, args []string) {
-		solution, _ := cmd.Flags().GetString("solution")
+		stack, _ := cmd.Flags().GetString("stack")
 		region, _ := cmd.Flags().GetString("region")
 		compartmentID, _ := cmd.Flags().GetString("compartment-id")
 		nodeCount, _ := cmd.Flags().GetString("node-count")
@@ -47,10 +47,11 @@ to quickly create a Cobra application.`,
 		helpers.FatalIfError(err)
 		ctx := context.Background()
 
-		stackID := createStack(ctx, provider, client, compartmentID, region, solution, nodeCount)
-		createStackInfo(".solution.json", stackID, region)
+		stackID := createStack(ctx, provider, client, compartmentID, region, stack, nodeCount)
+		addStackInfo(stackID)
 
-		createApplyJob(ctx, provider, client, stackID, region, solution)
+		applyJobID := createApplyJob(ctx, provider, client, stackID, region, stack)
+		addJobInfo(applyJobID)
 
 	},
 }
@@ -58,24 +59,23 @@ to quickly create a Cobra application.`,
 func init() {
 	rootCmd.AddCommand(deployCmd)
 
-	deployCmd.Flags().StringP("compartment-id", "c", "", "Unique identifier (OCID) of the compartment in which the stack resides.")
+	deployCmd.Flags().StringP("compartment-id", "c", "", "Unique identifier (OCID) of the compartment that the stack will be deployed in.")
 	deployCmd.MarkFlagRequired("compartment-id")
 
 	deployCmd.Flags().StringP("region", "r", "", "The region to deploy to")
 
-	deployCmd.Flags().StringP("solution", "s", "", "Name of the solution you want to deploy.")
-	deployCmd.MarkFlagRequired("solution")
+	deployCmd.Flags().StringP("stack", "s", "", "Name of the stack you want to deploy.")
+	deployCmd.MarkFlagRequired("stack")
 
 	deployCmd.Flags().StringP("node-count", "n", "", "Number of nodes to deploy.")
 }
 
-func createStack(ctx context.Context, provider common.ConfigurationProvider, client resourcemanager.ResourceManagerClient, compartment string, region string, solution string, nodeCount string) string {
-	stackName := fmt.Sprintf("%s-%s", solution, helpers.GetRandomString(4))
-	//tenancyOcid, _ := provider.TenancyOCID()
-	//compartmentID = os.Getenv("OCI_COMPARTMENT_ID")
+func createStack(ctx context.Context, provider common.ConfigurationProvider, client resourcemanager.ResourceManagerClient, compartment string, region string, stack string, nodeCount string) string {
+	stackName := fmt.Sprintf("%s-%s", stack, helpers.GetRandomString(4))
+	tenancyID, _ := provider.TenancyOCID()
 
 	// Base64 the zip file
-	zipFilePath := getWd() + "/" + solution + ".zip"
+	zipFilePath := getWd() + "/" + stack + ".zip"
 	f, _ := os.Open(zipFilePath)
 	reader := bufio.NewReader(f)
 	content, _ := ioutil.ReadAll(reader)
@@ -92,24 +92,27 @@ func createStack(ctx context.Context, provider common.ConfigurationProvider, cli
 		log.Fatal(err)
 	}
 
-	// node count override
-	_, nc := config["node_count"]
-	if nc {
-		if len(nodeCount) > 0 {
-			config["node_count"] = nodeCount
-			fmt.Println("Changing node count.")
-		}
-	} else {
-		fmt.Printf("\nChanging the node count is not supported with the solution %s, deploying with defaults.\n", solution)
-	}
+	config["tenancy_ocid"] = tenancyID
+	config["compartment_ocid"] = compartment
 
 	// region override
 	_, r := config["region"]
 	if r {
 		if len(region) > 0 {
 			config["region"] = region
-			fmt.Println("Changing region.")
 		}
+	} else {
+		config["region"] = region
+	}
+
+	// node count override
+	_, nc := config["node_count"]
+	if nc {
+		if len(nodeCount) > 0 {
+			config["node_count"] = nodeCount
+		}
+	} else {
+		fmt.Printf("\nChanging the node count is not supported with the stack %s, deploying stack with defaults.\n", stack)
 	}
 
 	req := resourcemanager.CreateStackRequest{
@@ -119,7 +122,7 @@ func createStack(ctx context.Context, provider common.ConfigurationProvider, cli
 				ZipFileBase64Encoded: common.String(encoded),
 			},
 			DisplayName:      common.String(stackName),
-			Description:      common.String(fmt.Sprintf("%s - Created by ocihpc", solution)),
+			Description:      common.String(fmt.Sprintf("%s - Created by ocihpc", stack)),
 			Variables:        config,
 			TerraformVersion: common.String("0.12.x"),
 		},
@@ -137,7 +140,12 @@ func createStack(ctx context.Context, provider common.ConfigurationProvider, cli
 
 }
 
-func createApplyJob(ctx context.Context, provider common.ConfigurationProvider, client resourcemanager.ResourceManagerClient, stackID string, region string, solution string) string {
+func createApplyJob(ctx context.Context, provider common.ConfigurationProvider, client resourcemanager.ResourceManagerClient, stackID string, region string, stack string) string {
+
+	outputQuery := map[string]string{
+		"ClusterNetwork": "outputs.bastion.value",
+		"vcn":            "outputs.vcn_id.value",
+	}
 
 	applyJobReq := resourcemanager.CreateJobRequest{
 		CreateJobDetails: resourcemanager.CreateJobDetails{
@@ -160,7 +168,8 @@ func createApplyJob(ctx context.Context, provider common.ConfigurationProvider, 
 		JobId: applyJobResp.Id,
 	}
 
-	start := time.Now()
+	fmt.Println()
+	start := time.Now().Add(time.Second * -5)
 
 	for {
 		elapsed := int(time.Since(start).Seconds())
@@ -171,11 +180,11 @@ func createApplyJob(ctx context.Context, provider common.ConfigurationProvider, 
 			os.Exit(1)
 		}
 
-		fmt.Printf("Deploying solution: %s [%dmin %dsec]\n", solution, elapsed/60, elapsed%60)
+		fmt.Printf("Deploying stack: %s [%dmin %dsec]\n", stack, elapsed/60, elapsed%60)
 		time.Sleep(10 * time.Second)
 
 		if readResp.LifecycleState == "SUCCEEDED" {
-			fmt.Printf("Deployment completed successfully\n")
+			fmt.Printf("\nDeployment of %s completed successfully\n", stack)
 
 			tfStateReq := resourcemanager.GetJobTfStateRequest{
 				JobId: applyJobResp.Id,
@@ -186,13 +195,13 @@ func createApplyJob(ctx context.Context, provider common.ConfigurationProvider, 
 			if err != nil {
 				log.Fatal("Error:", err)
 			}
-			var bastionIP string
-			bastionIP = tfStateParsed.Path("outputs.bastion.value").Data().(string)
-			fmt.Printf("\nYou can connect to your head node using the command: ssh opc@%s -i <location of the private key you used>\n", bastionIP)
+			var outputIP string
+			outputIP = tfStateParsed.Path(outputQuery[stack]).Data().(string)
+			fmt.Printf("\nYou can connect to your bastion/headnode using the command: ssh opc@%s -i <location of the private key>\n\n", outputIP)
 			break
 		} else if readResp.LifecycleState == "FAILED" {
-			fmt.Printf("\nDeployment failed. Please note there might be some resources already created.\n")
-			fmt.Printf("\nRun ocihpc delete %s to delete those resources.", solution)
+			fmt.Printf("\nDeployment failed. You can run 'ocihpc get logs' to get the logs of the failed job\n")
+			fmt.Printf("\nPlease note that there might be some resources that are already created. Run 'ocihpc delete %s' to delete those resources.", stack)
 			break
 		}
 	}

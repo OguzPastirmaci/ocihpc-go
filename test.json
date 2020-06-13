@@ -1,1159 +1,194 @@
-{
-  "version": 4,
-  "terraform_version": "0.12.20",
-  "serial": 22,
-  "lineage": "ec83fe2f-06eb-dba0-3f8e-8b2ea3b4ef4d",
-  "outputs": {
-    "bastion": {
-      "value": "132.145.181.29",
-      "type": "string"
-    },
-    "private_ips": {
-      "value": "172.16.1.2",
-      "type": "string"
-    }
+[
+  {
+    "type": "TERRAFORM_CONSOLE",
+    "level": "INFO",
+    "timestamp": "2020-06-12T22:25:55.844Z",
+    "message": ""
   },
-  "resources": [
-    {
-      "mode": "data",
-      "type": "oci_core_app_catalog_subscriptions",
-      "name": "mp_image_subscription",
-      "provider": "provider.oci",
-      "instances": [
-        {
-          "schema_version": 0,
-          "attributes": {
-            "app_catalog_subscriptions": [
-              {
-                "compartment_id": "ocid1.compartment.oc1..aaaaaaaafxezajxlyjxkh23ux75iqttja2qvdded3fc3v5h4kth6zvhnus3q",
-                "display_name": "Oracle Linux 7 - HPC Cluster Networking Image",
-                "eula_link": "",
-                "listing_id": "ocid1.appcataloglisting.oc1..aaaaaaaahz2xiwfcsbebmqg7sp6lhdt6r2vsjro5jfukkl5cntlqvfhkbzaq",
-                "listing_resource_id": "ocid1.image.oc1..aaaaaaaafgzcla4pkskkegec3okzhbtmaylnldbxoa4ln7d6npytnqwu3mca",
-                "listing_resource_version": "20190906",
-                "oracle_terms_of_use_link": "",
-                "publisher_name": "",
-                "signature": "",
-                "summary": "Oracle Linux 7 High Performance Computing Image",
-                "time_created": "2020-06-12 04:47:19.015 +0000 UTC",
-                "time_retrieved": ""
-              }
-            ],
-            "compartment_id": "ocid1.compartment.oc1..aaaaaaaafxezajxlyjxkh23ux75iqttja2qvdded3fc3v5h4kth6zvhnus3q",
-            "filter": [
-              {
-                "name": "listing_resource_version",
-                "regex": false,
-                "values": [
-                  "20190906"
-                ]
-              }
-            ],
-            "id": "2020-06-12 06:27:07.234530214 +0000 UTC",
-            "listing_id": "ocid1.appcataloglisting.oc1..aaaaaaaahz2xiwfcsbebmqg7sp6lhdt6r2vsjro5jfukkl5cntlqvfhkbzaq"
-          }
-        }
-      ]
-    },
-    {
-      "mode": "data",
-      "type": "oci_core_cluster_network_instances",
-      "name": "cluster_network_instances",
-      "provider": "provider.oci",
-      "instances": [
-        {
-          "schema_version": 0,
-          "attributes": {
-            "cluster_network_id": "ocid1.clusternetwork.oc1.iad.amaaaaaa7rhxvoaa3twagzxhk4f46rm5yzhgogj2vdthj4zd5oydnppbd33q",
-            "compartment_id": "ocid1.compartment.oc1..aaaaaaaafxezajxlyjxkh23ux75iqttja2qvdded3fc3v5h4kth6zvhnus3q",
-            "display_name": null,
-            "filter": null,
-            "id": "2020-06-12 06:32:07.443684373 +0000 UTC",
-            "instances": [
-              {
-                "availability_domain": "kWVD:US-ASHBURN-AD-3",
-                "compartment_id": "ocid1.compartment.oc1..aaaaaaaafxezajxlyjxkh23ux75iqttja2qvdded3fc3v5h4kth6zvhnus3q",
-                "display_name": "inst-tsj5e-quality-midge",
-                "fault_domain": "FAULT-DOMAIN-3",
-                "id": "ocid1.instance.oc1.iad.anuwcljr7rhxvoacxs3ks2w226a6ebuztiyckpd72c4llvui6ddg7bty7fwa",
-                "instance_configuration_id": "ocid1.instanceconfiguration.oc1.iad.aaaaaaaao6tkk2g2h73f2dejcti6mus3xo7b5rccrtngopef6jw6kqqhbdkq",
-                "load_balancer_backends": [],
-                "region": "iad",
-                "shape": "BM.HPC2.36",
-                "state": "Running",
-                "time_created": "2020-06-12 06:28:25.044 +0000 UTC"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "mode": "data",
-      "type": "oci_core_instance",
-      "name": "cluster_instances",
-      "each": "list",
-      "provider": "provider.oci",
-      "instances": [
-        {
-          "index_key": 0,
-          "schema_version": 0,
-          "attributes": {
-            "agent_config": [
-              {
-                "is_management_disabled": false,
-                "is_monitoring_disabled": false
-              }
-            ],
-            "availability_domain": "kWVD:US-ASHBURN-AD-3",
-            "boot_volume_id": "ocid1.bootvolume.oc1.iad.abuwcljrp5ytm4jol4te7yyp5wfqgazndzncqne2nkcfsm2mqzajgxxwxvcq",
-            "compartment_id": "ocid1.compartment.oc1..aaaaaaaafxezajxlyjxkh23ux75iqttja2qvdded3fc3v5h4kth6zvhnus3q",
-            "create_vnic_details": null,
-            "dedicated_vm_host_id": null,
-            "defined_tags": {
-              "Oracle-Tag.CreatedBy": "oguz",
-              "Oracle-Tag.CreatedOn": "2020-06-12T06:27:14.652Z"
-            },
-            "display_name": "inst-tsj5e-quality-midge",
-            "extended_metadata": null,
-            "fault_domain": "FAULT-DOMAIN-3",
-            "freeform_tags": {
-              "oci:compute:instanceconfiguration": "ocid1.instanceconfiguration.oc1.iad.aaaaaaaao6tkk2g2h73f2dejcti6mus3xo7b5rccrtngopef6jw6kqqhbdkq",
-              "oci:compute:instancepool": "ocid1.instancepool.oc1.iad.aaaaaaaazxcwiehisw3tvav6nmyb4fah7evunzw4p4eyw3jgwd4o5frmp5ba"
-            },
-            "hostname_label": "inst-tsj5e-quality-midge",
-            "id": "ocid1.instance.oc1.iad.anuwcljr7rhxvoacxs3ks2w226a6ebuztiyckpd72c4llvui6ddg7bty7fwa",
-            "image": "ocid1.image.oc1..aaaaaaaafgzcla4pkskkegec3okzhbtmaylnldbxoa4ln7d6npytnqwu3mca",
-            "instance_id": "ocid1.instance.oc1.iad.anuwcljr7rhxvoacxs3ks2w226a6ebuztiyckpd72c4llvui6ddg7bty7fwa",
-            "ipxe_script": null,
-            "is_pv_encryption_in_transit_enabled": null,
-            "launch_mode": "NATIVE",
-            "launch_options": [
-              {
-                "boot_volume_type": "ISCSI",
-                "firmware": "UEFI_64",
-                "is_consistent_volume_naming_enabled": false,
-                "is_pv_encryption_in_transit_enabled": false,
-                "network_type": "VFIO",
-                "remote_data_volume_type": "ISCSI"
-              }
-            ],
-            "metadata": {
-              "ssh_authorized_keys": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDS/B4OGJGblgVc/7VFtLFv3eEZd4n9wo0b6Z6UJu+ZAI90WhBuDCcNhRT7YYdhOByXcOA19a3GZdpdfaELdsl6nb00eXXF8FrmAbDuKZitUAfTPHKAAG4TICiri1yOXMe3FQc19V35W3K9UxAF45wgtgaRRmer0ca6cQpUXYLZcgJLApZPA8g8ZvejmQYS1Mb4EKoi6+tSIIFd2rGtzf+Yjlbme2mvkcSIBqSRMdnPIntSHqWQUegqqKo88GHbL34Z1t1RcIwdtwHxbXUjzuxra+UjEC1HIk9ac6cMIqyxkdHh1II0Uq8z8oPAyUVYs1FpEbgGabC3Y6slh76OA6inCDr4ctzwDr2Iw9Az0G8ZBx2S6NxIynbBJbd/DdSbispWMC7R6oZPJbfvYqYlXoyMI/9TgKbG4yMxTRgOTX4ofp3y+IXDXTf8mu0aqV65eiaD7+d2etC8tnIjVX715c/u/a6jZ9X9VoRR/xoahLfNeEzXujgjDqbfRC10KkeZes6eC3TMXS9xmv+AGW/1FELVXZBWyCRLW66BBWG33lEtkkH7ao1e07jZQKZI2RgAs+PpoEmnWkjj8rM1DexUjyWzk4Y1k9efIEA3ynxudwEn7e4b8fqkx5dMWD6rLZ7/phEC7+GSG6mJCxOooJT1nLHm0pp8kvtIKCCWPubWT5uTcw==\n",
-              "user_data": "I2Nsb3VkLWNvbmZpZwo="
-            },
-            "preserve_boot_volume": null,
-            "private_ip": "172.16.1.2",
-            "public_ip": "",
-            "region": "iad",
-            "shape": "BM.HPC2.36",
-            "shape_config": [
-              {
-                "gpu_description": "",
-                "gpus": 0,
-                "local_disk_description": "NVMe SSD Storage",
-                "local_disks": 8,
-                "local_disks_total_size_in_gbs": 6860.7998046875,
-                "max_vnic_attachments": 50,
-                "memory_in_gbs": 384,
-                "networking_bandwidth_in_gbps": 25,
-                "ocpus": 36,
-                "processor_description": "3.0 GHz Intel® Xeon® Gold 6154 (Skylake)"
-              }
-            ],
-            "source_details": [
-              {
-                "boot_volume_size_in_gbs": "100",
-                "kms_key_id": "",
-                "source_id": "ocid1.image.oc1..aaaaaaaafgzcla4pkskkegec3okzhbtmaylnldbxoa4ln7d6npytnqwu3mca",
-                "source_type": "image"
-              }
-            ],
-            "state": "RUNNING",
-            "subnet_id": "ocid1.subnet.oc1.iad.aaaaaaaaa7kkt4vo7fvo6ajfal55cipkk7eradhqmpj6gpza6y7efsudwdsa",
-            "system_tags": {},
-            "time_created": "2020-06-12 06:28:24.345 +0000 UTC",
-            "time_maintenance_reboot_due": null
-          }
-        }
-      ]
-    },
-    {
-      "mode": "data",
-      "type": "oci_core_subnet",
-      "name": "private_subnet",
-      "provider": "provider.oci",
-      "instances": [
-        {
-          "schema_version": 0,
-          "attributes": {
-            "availability_domain": null,
-            "cidr_block": "172.16.1.0/24",
-            "compartment_id": "ocid1.compartment.oc1..aaaaaaaafxezajxlyjxkh23ux75iqttja2qvdded3fc3v5h4kth6zvhnus3q",
-            "defined_tags": {
-              "Oracle-Tag.CreatedBy": "oguz",
-              "Oracle-Tag.CreatedOn": "2020-06-12T06:27:13.950Z"
-            },
-            "dhcp_options_id": "ocid1.dhcpoptions.oc1.iad.aaaaaaaaeshhru3h7y5i5d2mqhdaf4fbxexe2qu4ie25435xwuu7ppasanzq",
-            "display_name": "quality-midge_private_subnet",
-            "dns_label": "private",
-            "freeform_tags": {},
-            "id": "ocid1.subnet.oc1.iad.aaaaaaaaa7kkt4vo7fvo6ajfal55cipkk7eradhqmpj6gpza6y7efsudwdsa",
-            "ipv6cidr_block": null,
-            "ipv6public_cidr_block": null,
-            "ipv6virtual_router_ip": null,
-            "prohibit_public_ip_on_vnic": true,
-            "route_table_id": "ocid1.routetable.oc1.iad.aaaaaaaad4syvyfwilxskvlhtvy2v5p2c4brc7u4ddtselbv5qj6zbtvnqja",
-            "security_list_ids": [
-              "ocid1.securitylist.oc1.iad.aaaaaaaarxwwv6aympznmv467fodlyaxmpgmc77ksacefwo5s3mqxdaa4dvq"
-            ],
-            "state": "AVAILABLE",
-            "subnet_domain_name": "private.cluster.oraclevcn.com",
-            "subnet_id": "ocid1.subnet.oc1.iad.aaaaaaaaa7kkt4vo7fvo6ajfal55cipkk7eradhqmpj6gpza6y7efsudwdsa",
-            "time_created": "2020-06-12 06:27:13.992 +0000 UTC",
-            "vcn_id": "ocid1.vcn.oc1.iad.amaaaaaa7rhxvoaacurkzqrphcb6uvyphcn5kzdhouoed5zlc62eyrefugoa",
-            "virtual_router_ip": "172.16.1.1",
-            "virtual_router_mac": "00:00:17:AA:D1:BA"
-          }
-        }
-      ]
-    },
-    {
-      "mode": "data",
-      "type": "oci_core_subnet",
-      "name": "public_subnet",
-      "provider": "provider.oci",
-      "instances": [
-        {
-          "schema_version": 0,
-          "attributes": {
-            "availability_domain": null,
-            "cidr_block": "172.16.0.0/24",
-            "compartment_id": "ocid1.compartment.oc1..aaaaaaaafxezajxlyjxkh23ux75iqttja2qvdded3fc3v5h4kth6zvhnus3q",
-            "defined_tags": {
-              "Oracle-Tag.CreatedBy": "oguz",
-              "Oracle-Tag.CreatedOn": "2020-06-12T06:27:13.445Z"
-            },
-            "dhcp_options_id": "ocid1.dhcpoptions.oc1.iad.aaaaaaaaeshhru3h7y5i5d2mqhdaf4fbxexe2qu4ie25435xwuu7ppasanzq",
-            "display_name": "quality-midge_public_subnet",
-            "dns_label": "public",
-            "freeform_tags": {},
-            "id": "ocid1.subnet.oc1.iad.aaaaaaaa5bunnt4e3fl46ohmna2azt7wz6hgpj7m2p4asfc6mczdaurb4oaq",
-            "ipv6cidr_block": null,
-            "ipv6public_cidr_block": null,
-            "ipv6virtual_router_ip": null,
-            "prohibit_public_ip_on_vnic": false,
-            "route_table_id": "ocid1.routetable.oc1.iad.aaaaaaaa56qjsly6pznvydlsy6du5tqhd3k5qhhqn26naqzbidqsepur5slq",
-            "security_list_ids": [
-              "ocid1.securitylist.oc1.iad.aaaaaaaafqtdpn4di773hh2c4fbfduxibuz4jg2eu4jdu6kor457i6tcgqaa"
-            ],
-            "state": "AVAILABLE",
-            "subnet_domain_name": "public.cluster.oraclevcn.com",
-            "subnet_id": "ocid1.subnet.oc1.iad.aaaaaaaa5bunnt4e3fl46ohmna2azt7wz6hgpj7m2p4asfc6mczdaurb4oaq",
-            "time_created": "2020-06-12 06:27:14.258 +0000 UTC",
-            "vcn_id": "ocid1.vcn.oc1.iad.amaaaaaa7rhxvoaacurkzqrphcb6uvyphcn5kzdhouoed5zlc62eyrefugoa",
-            "virtual_router_ip": "172.16.0.1",
-            "virtual_router_mac": "00:00:17:AA:D1:BA"
-          }
-        }
-      ]
-    },
-    {
-      "mode": "data",
-      "type": "template_file",
-      "name": "bastion_config",
-      "provider": "provider.template",
-      "instances": [
-        {
-          "schema_version": 0,
-          "attributes": {
-            "filename": null,
-            "id": "88c95955b024402aa9572b663f7eeb134f01343bb92af27b50e97e72b22c565f",
-            "rendered": "#cloud-config\n",
-            "template": "#cloud-config\n",
-            "vars": {
-              "key": "-----BEGIN RSA PRIVATE KEY-----\n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\n-----END RSA PRIVATE KEY-----\n"
-            }
-          }
-        }
-      ]
-    },
-    {
-      "mode": "data",
-      "type": "template_file",
-      "name": "config",
-      "provider": "provider.template",
-      "instances": [
-        {
-          "schema_version": 0,
-          "attributes": {
-            "filename": null,
-            "id": "88c95955b024402aa9572b663f7eeb134f01343bb92af27b50e97e72b22c565f",
-            "rendered": "#cloud-config\n",
-            "template": "#cloud-config\n",
-            "vars": null
-          }
-        }
-      ]
-    },
-    {
-      "mode": "managed",
-      "type": "oci_core_app_catalog_listing_resource_version_agreement",
-      "name": "mp_image_agreement",
-      "each": "list",
-      "provider": "provider.oci",
-      "instances": [
-        {
-          "index_key": 0,
-          "schema_version": 0,
-          "attributes": {
-            "eula_link": "",
-            "id": "2020-06-12 06:27:12.361 +0000 UTC",
-            "listing_id": "ocid1.appcataloglisting.oc1..aaaaaaaahz2xiwfcsbebmqg7sp6lhdt6r2vsjro5jfukkl5cntlqvfhkbzaq",
-            "listing_resource_version": "20190906",
-            "oracle_terms_of_use_link": "https://objectstorage.us-ashburn-1.oraclecloud.com/n/partnerimagecatalog/b/eulas/o/oracle-apps-terms-of-use.txt",
-            "signature": "2185b78ef3c381cd0e97c407c4da707ddaa2a68f00504ee79d8f231897a0f09d",
-            "time_retrieved": "2020-06-12T06:27:12.361Z",
-            "timeouts": null
-          },
-          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo5MDAwMDAwMDAwMDAsImRlbGV0ZSI6OTAwMDAwMDAwMDAwLCJ1cGRhdGUiOjkwMDAwMDAwMDAwMH19"
-        }
-      ]
-    },
-    {
-      "mode": "managed",
-      "type": "oci_core_app_catalog_subscription",
-      "name": "mp_image_subscription",
-      "each": "list",
-      "provider": "provider.oci",
-      "instances": [
-        {
-          "index_key": 0,
-          "schema_version": 0,
-          "attributes": {
-            "compartment_id": "ocid1.compartment.oc1..aaaaaaaafxezajxlyjxkh23ux75iqttja2qvdded3fc3v5h4kth6zvhnus3q",
-            "display_name": "Oracle Linux 7 - HPC Cluster Networking Image",
-            "eula_link": "",
-            "id": "compartmentId/ocid1.compartment.oc1..aaaaaaaafxezajxlyjxkh23ux75iqttja2qvdded3fc3v5h4kth6zvhnus3q/listingId/ocid1.appcataloglisting.oc1..aaaaaaaahz2xiwfcsbebmqg7sp6lhdt6r2vsjro5jfukkl5cntlqvfhkbzaq/listingResourceVersion/20190906",
-            "listing_id": "ocid1.appcataloglisting.oc1..aaaaaaaahz2xiwfcsbebmqg7sp6lhdt6r2vsjro5jfukkl5cntlqvfhkbzaq",
-            "listing_resource_id": "ocid1.image.oc1..aaaaaaaafgzcla4pkskkegec3okzhbtmaylnldbxoa4ln7d6npytnqwu3mca",
-            "listing_resource_version": "20190906",
-            "oracle_terms_of_use_link": "https://objectstorage.us-ashburn-1.oraclecloud.com/n/partnerimagecatalog/b/eulas/o/oracle-apps-terms-of-use.txt",
-            "publisher_name": null,
-            "signature": "2185b78ef3c381cd0e97c407c4da707ddaa2a68f00504ee79d8f231897a0f09d",
-            "summary": "Oracle Linux 7 High Performance Computing Image",
-            "time_created": "2020-06-12 04:47:19.015 +0000 UTC",
-            "time_retrieved": "2020-06-12T06:27:12.361Z",
-            "timeouts": {
-              "create": "20m",
-              "delete": null,
-              "update": null
-            }
-          },
-          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjkwMDAwMDAwMDAwMCwidXBkYXRlIjo5MDAwMDAwMDAwMDB9fQ==",
-          "dependencies": [
-            "oci_core_app_catalog_listing_resource_version_agreement.mp_image_agreement"
-          ]
-        }
-      ]
-    },
-    {
-      "mode": "managed",
-      "type": "oci_core_cluster_network",
-      "name": "cluster_network",
-      "provider": "provider.oci",
-      "instances": [
-        {
-          "schema_version": 0,
-          "attributes": {
-            "compartment_id": "ocid1.compartment.oc1..aaaaaaaafxezajxlyjxkh23ux75iqttja2qvdded3fc3v5h4kth6zvhnus3q",
-            "defined_tags": {
-              "Oracle-Tag.CreatedBy": "oguz",
-              "Oracle-Tag.CreatedOn": "2020-06-12T06:27:14.652Z"
-            },
-            "display_name": "quality-midge",
-            "freeform_tags": {},
-            "id": "ocid1.clusternetwork.oc1.iad.amaaaaaa7rhxvoaa3twagzxhk4f46rm5yzhgogj2vdthj4zd5oydnppbd33q",
-            "instance_pools": [
-              {
-                "compartment_id": "ocid1.compartment.oc1..aaaaaaaafxezajxlyjxkh23ux75iqttja2qvdded3fc3v5h4kth6zvhnus3q",
-                "defined_tags": {
-                  "Oracle-Tag.CreatedBy": "oguz",
-                  "Oracle-Tag.CreatedOn": "2020-06-12T06:27:14.652Z"
-                },
-                "display_name": "quality-midge",
-                "freeform_tags": {},
-                "id": "ocid1.instancepool.oc1.iad.aaaaaaaazxcwiehisw3tvav6nmyb4fah7evunzw4p4eyw3jgwd4o5frmp5ba",
-                "instance_configuration_id": "ocid1.instanceconfiguration.oc1.iad.aaaaaaaao6tkk2g2h73f2dejcti6mus3xo7b5rccrtngopef6jw6kqqhbdkq",
-                "load_balancers": [],
-                "placement_configurations": [
-                  {
-                    "availability_domain": "kWVD:US-ASHBURN-AD-3",
-                    "fault_domains": [],
-                    "primary_subnet_id": "ocid1.subnet.oc1.iad.aaaaaaaaa7kkt4vo7fvo6ajfal55cipkk7eradhqmpj6gpza6y7efsudwdsa",
-                    "secondary_vnic_subnets": []
-                  }
-                ],
-                "size": 1,
-                "state": "RUNNING",
-                "time_created": "2020-06-12 06:27:59.492 +0000 UTC"
-              }
-            ],
-            "placement_configuration": [
-              {
-                "availability_domain": "kWVD:US-ASHBURN-AD-3",
-                "primary_subnet_id": "ocid1.subnet.oc1.iad.aaaaaaaaa7kkt4vo7fvo6ajfal55cipkk7eradhqmpj6gpza6y7efsudwdsa",
-                "secondary_vnic_subnets": []
-              }
-            ],
-            "state": "RUNNING",
-            "time_created": "2020-06-12 06:27:17.96 +0000 UTC",
-            "time_updated": "2020-06-12 06:27:59.958 +0000 UTC",
-            "timeouts": null
-          },
-          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo5MDAwMDAwMDAwMDAsImRlbGV0ZSI6OTAwMDAwMDAwMDAwLCJ1cGRhdGUiOjkwMDAwMDAwMDAwMH19",
-          "dependencies": [
-            "oci_core_app_catalog_listing_resource_version_agreement.mp_image_agreement",
-            "oci_core_app_catalog_subscription.mp_image_subscription",
-            "oci_core_instance_configuration.instance_configuration",
-            "oci_core_internet_gateway.ig1",
-            "oci_core_nat_gateway.ng1",
-            "oci_core_route_table.private_route_table",
-            "oci_core_route_table.public_route_table",
-            "oci_core_security_list.internal-security-list",
-            "oci_core_security_list.public-security-list",
-            "oci_core_subnet.private-subnet",
-            "oci_core_subnet.public-subnet",
-            "oci_core_vcn.vcn",
-            "random_pet.name",
-            "tls_private_key.ssh"
-          ]
-        }
-      ]
-    },
-    {
-      "mode": "managed",
-      "type": "oci_core_instance",
-      "name": "bastion",
-      "provider": "provider.oci",
-      "instances": [
-        {
-          "schema_version": 0,
-          "attributes": {
-            "agent_config": [
-              {
-                "is_management_disabled": false,
-                "is_monitoring_disabled": false
-              }
-            ],
-            "availability_domain": "kWVD:US-ASHBURN-AD-3",
-            "boot_volume_id": "ocid1.bootvolume.oc1.iad.abuwcljrlbl62cbxmigzh2tw2y3kfoi7vwyhd7ghgjwpeuklkxau4jlkrd4a",
-            "compartment_id": "ocid1.compartment.oc1..aaaaaaaafxezajxlyjxkh23ux75iqttja2qvdded3fc3v5h4kth6zvhnus3q",
-            "create_vnic_details": [
-              {
-                "assign_public_ip": "true",
-                "defined_tags": {
-                  "Oracle-Tag.CreatedBy": "oguz",
-                  "Oracle-Tag.CreatedOn": "2020-06-12T06:32:08.759Z"
-                },
-                "display_name": "quality-midge-bastion",
-                "freeform_tags": {},
-                "hostname_label": "quality-midge-bastion",
-                "nsg_ids": null,
-                "private_ip": "172.16.0.2",
-                "skip_source_dest_check": false,
-                "subnet_id": "ocid1.subnet.oc1.iad.aaaaaaaa5bunnt4e3fl46ohmna2azt7wz6hgpj7m2p4asfc6mczdaurb4oaq"
-              }
-            ],
-            "dedicated_vm_host_id": null,
-            "defined_tags": {
-              "Oracle-Tag.CreatedBy": "oguz",
-              "Oracle-Tag.CreatedOn": "2020-06-12T06:32:08.460Z"
-            },
-            "display_name": "quality-midge-bastion",
-            "extended_metadata": null,
-            "fault_domain": "FAULT-DOMAIN-2",
-            "freeform_tags": {},
-            "hostname_label": "quality-midge-bastion",
-            "id": "ocid1.instance.oc1.iad.anuwcljr7rhxvoacsnmdhnnkwo6fslbcsg7qmtw6jc4z637wcr4zdeagxudq",
-            "image": "ocid1.image.oc1.iad.aaaaaaaavzjw65d6pngbghgrujb76r7zgh2s64bdl4afombrdocn4wdfrwdq",
-            "ipxe_script": null,
-            "is_pv_encryption_in_transit_enabled": null,
-            "launch_mode": "NATIVE",
-            "launch_options": [
-              {
-                "boot_volume_type": "PARAVIRTUALIZED",
-                "firmware": "UEFI_64",
-                "is_consistent_volume_naming_enabled": true,
-                "is_pv_encryption_in_transit_enabled": false,
-                "network_type": "PARAVIRTUALIZED",
-                "remote_data_volume_type": "PARAVIRTUALIZED"
-              }
-            ],
-            "metadata": {
-              "ssh_authorized_keys": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDS3ko+fQCBWKLdIywleJJZePK8tB7ySlx3eRxzc/xgv48ido0WjdDvw0zVLy4dZhSxUQAej2IdbzimgeAl1Wi0w/rPfut6v4YFaIskQItzCmdR4teUjvRp1iv+hvZOTOYt/rBMXprA232OvMAYZc1+tJb9H9/p7SLj+KOQ/zAywb820DCr0gebiRNl/5YM42LKceHbFXDhSHgLGiE+pQiJB0KeT0eGSpCNkb2mhjoP6Xg/GBy+ZkyIGr/zJBw0veufv2vRH9RybEQb4iEIAm7K8PUWTmfhbrDwFqX2p9p7iRGoq62WoV6awlr7g1te+X9bQ2PbRx979Kf3hCFjh2FP opastirm@opastirm-mac\nssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDS/B4OGJGblgVc/7VFtLFv3eEZd4n9wo0b6Z6UJu+ZAI90WhBuDCcNhRT7YYdhOByXcOA19a3GZdpdfaELdsl6nb00eXXF8FrmAbDuKZitUAfTPHKAAG4TICiri1yOXMe3FQc19V35W3K9UxAF45wgtgaRRmer0ca6cQpUXYLZcgJLApZPA8g8ZvejmQYS1Mb4EKoi6+tSIIFd2rGtzf+Yjlbme2mvkcSIBqSRMdnPIntSHqWQUegqqKo88GHbL34Z1t1RcIwdtwHxbXUjzuxra+UjEC1HIk9ac6cMIqyxkdHh1II0Uq8z8oPAyUVYs1FpEbgGabC3Y6slh76OA6inCDr4ctzwDr2Iw9Az0G8ZBx2S6NxIynbBJbd/DdSbispWMC7R6oZPJbfvYqYlXoyMI/9TgKbG4yMxTRgOTX4ofp3y+IXDXTf8mu0aqV65eiaD7+d2etC8tnIjVX715c/u/a6jZ9X9VoRR/xoahLfNeEzXujgjDqbfRC10KkeZes6eC3TMXS9xmv+AGW/1FELVXZBWyCRLW66BBWG33lEtkkH7ao1e07jZQKZI2RgAs+PpoEmnWkjj8rM1DexUjyWzk4Y1k9efIEA3ynxudwEn7e4b8fqkx5dMWD6rLZ7/phEC7+GSG6mJCxOooJT1nLHm0pp8kvtIKCCWPubWT5uTcw==\n",
-              "user_data": "I2Nsb3VkLWNvbmZpZwo="
-            },
-            "preserve_boot_volume": null,
-            "private_ip": "172.16.0.2",
-            "public_ip": "132.145.181.29",
-            "region": "iad",
-            "shape": "VM.Standard2.4",
-            "shape_config": [
-              {
-                "gpu_description": "",
-                "gpus": 0,
-                "local_disk_description": "",
-                "local_disks": 0,
-                "local_disks_total_size_in_gbs": 0,
-                "max_vnic_attachments": 4,
-                "memory_in_gbs": 60,
-                "networking_bandwidth_in_gbps": 4.099999904632568,
-                "ocpus": 4,
-                "processor_description": "2.0 GHz Intel® Xeon® Platinum 8167M (Skylake)"
-              }
-            ],
-            "source_details": [
-              {
-                "boot_volume_size_in_gbs": "47",
-                "kms_key_id": "",
-                "source_id": "ocid1.image.oc1.iad.aaaaaaaavzjw65d6pngbghgrujb76r7zgh2s64bdl4afombrdocn4wdfrwdq",
-                "source_type": "image"
-              }
-            ],
-            "state": "RUNNING",
-            "subnet_id": "ocid1.subnet.oc1.iad.aaaaaaaa5bunnt4e3fl46ohmna2azt7wz6hgpj7m2p4asfc6mczdaurb4oaq",
-            "system_tags": {},
-            "time_created": "2020-06-12 06:32:09.488 +0000 UTC",
-            "time_maintenance_reboot_due": "",
-            "timeouts": null
-          },
-          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo3MjAwMDAwMDAwMDAwLCJkZWxldGUiOjcyMDAwMDAwMDAwMDAsInVwZGF0ZSI6NzIwMDAwMDAwMDAwMH19",
-          "dependencies": [
-            "oci_core_app_catalog_listing_resource_version_agreement.mp_image_agreement",
-            "oci_core_app_catalog_subscription.mp_image_subscription",
-            "oci_core_cluster_network.cluster_network",
-            "oci_core_instance_configuration.instance_configuration",
-            "oci_core_internet_gateway.ig1",
-            "oci_core_nat_gateway.ng1",
-            "oci_core_route_table.private_route_table",
-            "oci_core_route_table.public_route_table",
-            "oci_core_security_list.internal-security-list",
-            "oci_core_security_list.public-security-list",
-            "oci_core_subnet.private-subnet",
-            "oci_core_subnet.public-subnet",
-            "oci_core_vcn.vcn",
-            "random_pet.name",
-            "tls_private_key.ssh"
-          ]
-        }
-      ]
-    },
-    {
-      "mode": "managed",
-      "type": "oci_core_instance_configuration",
-      "name": "instance_configuration",
-      "provider": "provider.oci",
-      "instances": [
-        {
-          "schema_version": 0,
-          "attributes": {
-            "compartment_id": "ocid1.compartment.oc1..aaaaaaaafxezajxlyjxkh23ux75iqttja2qvdded3fc3v5h4kth6zvhnus3q",
-            "deferred_fields": [
-              "instanceDetails.launchDetails.createVnicDetails.subnetId"
-            ],
-            "defined_tags": {
-              "Oracle-Tag.CreatedBy": "oguz",
-              "Oracle-Tag.CreatedOn": "2020-06-12T06:27:14.201Z"
-            },
-            "display_name": "quality-midge",
-            "freeform_tags": {},
-            "id": "ocid1.instanceconfiguration.oc1.iad.aaaaaaaao6tkk2g2h73f2dejcti6mus3xo7b5rccrtngopef6jw6kqqhbdkq",
-            "instance_details": [
-              {
-                "block_volumes": [],
-                "instance_type": "compute",
-                "launch_details": [
-                  {
-                    "agent_config": [],
-                    "availability_domain": "kWVD:US-ASHBURN-AD-3",
-                    "compartment_id": "ocid1.compartment.oc1..aaaaaaaafxezajxlyjxkh23ux75iqttja2qvdded3fc3v5h4kth6zvhnus3q",
-                    "create_vnic_details": [
-                      {
-                        "assign_public_ip": false,
-                        "defined_tags": {},
-                        "display_name": "",
-                        "freeform_tags": {},
-                        "hostname_label": "",
-                        "nsg_ids": null,
-                        "private_ip": "",
-                        "skip_source_dest_check": false,
-                        "subnet_id": ""
-                      }
-                    ],
-                    "dedicated_vm_host_id": "",
-                    "defined_tags": {},
-                    "display_name": "quality-midge",
-                    "extended_metadata": {},
-                    "fault_domain": "",
-                    "freeform_tags": {},
-                    "ipxe_script": "",
-                    "is_pv_encryption_in_transit_enabled": false,
-                    "launch_mode": "",
-                    "launch_options": [],
-                    "metadata": {
-                      "ssh_authorized_keys": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDS/B4OGJGblgVc/7VFtLFv3eEZd4n9wo0b6Z6UJu+ZAI90WhBuDCcNhRT7YYdhOByXcOA19a3GZdpdfaELdsl6nb00eXXF8FrmAbDuKZitUAfTPHKAAG4TICiri1yOXMe3FQc19V35W3K9UxAF45wgtgaRRmer0ca6cQpUXYLZcgJLApZPA8g8ZvejmQYS1Mb4EKoi6+tSIIFd2rGtzf+Yjlbme2mvkcSIBqSRMdnPIntSHqWQUegqqKo88GHbL34Z1t1RcIwdtwHxbXUjzuxra+UjEC1HIk9ac6cMIqyxkdHh1II0Uq8z8oPAyUVYs1FpEbgGabC3Y6slh76OA6inCDr4ctzwDr2Iw9Az0G8ZBx2S6NxIynbBJbd/DdSbispWMC7R6oZPJbfvYqYlXoyMI/9TgKbG4yMxTRgOTX4ofp3y+IXDXTf8mu0aqV65eiaD7+d2etC8tnIjVX715c/u/a6jZ9X9VoRR/xoahLfNeEzXujgjDqbfRC10KkeZes6eC3TMXS9xmv+AGW/1FELVXZBWyCRLW66BBWG33lEtkkH7ao1e07jZQKZI2RgAs+PpoEmnWkjj8rM1DexUjyWzk4Y1k9efIEA3ynxudwEn7e4b8fqkx5dMWD6rLZ7/phEC7+GSG6mJCxOooJT1nLHm0pp8kvtIKCCWPubWT5uTcw==\n",
-                      "user_data": "I2Nsb3VkLWNvbmZpZwo="
-                    },
-                    "preferred_maintenance_action": "",
-                    "shape": "BM.HPC2.36",
-                    "shape_config": [],
-                    "source_details": [
-                      {
-                        "boot_volume_id": "",
-                        "boot_volume_size_in_gbs": "100",
-                        "image_id": "ocid1.image.oc1..aaaaaaaafgzcla4pkskkegec3okzhbtmaylnldbxoa4ln7d6npytnqwu3mca",
-                        "source_type": "image"
-                      }
-                    ]
-                  }
-                ],
-                "secondary_vnics": []
-              }
-            ],
-            "instance_id": null,
-            "source": "NONE",
-            "time_created": "2020-06-12 06:27:14.376 +0000 UTC",
-            "timeouts": null
-          },
-          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo5MDAwMDAwMDAwMDAsImRlbGV0ZSI6OTAwMDAwMDAwMDAwLCJ1cGRhdGUiOjkwMDAwMDAwMDAwMH19",
-          "dependencies": [
-            "oci_core_app_catalog_listing_resource_version_agreement.mp_image_agreement",
-            "oci_core_app_catalog_subscription.mp_image_subscription",
-            "random_pet.name",
-            "tls_private_key.ssh"
-          ]
-        }
-      ]
-    },
-    {
-      "mode": "managed",
-      "type": "oci_core_internet_gateway",
-      "name": "ig1",
-      "each": "list",
-      "provider": "provider.oci",
-      "instances": [
-        {
-          "index_key": 0,
-          "schema_version": 0,
-          "attributes": {
-            "compartment_id": "ocid1.compartment.oc1..aaaaaaaafxezajxlyjxkh23ux75iqttja2qvdded3fc3v5h4kth6zvhnus3q",
-            "defined_tags": {
-              "Oracle-Tag.CreatedBy": "oguz",
-              "Oracle-Tag.CreatedOn": "2020-06-12T06:27:12.908Z"
-            },
-            "display_name": "quality-midge_internet-gateway",
-            "enabled": true,
-            "freeform_tags": {},
-            "id": "ocid1.internetgateway.oc1.iad.aaaaaaaaadz73bauwd3d7jhnf3zl43g3wo7vlyfawy52tz23zkeunlk4sc4a",
-            "state": "AVAILABLE",
-            "time_created": "2020-06-12 06:27:12.927 +0000 UTC",
-            "timeouts": null,
-            "vcn_id": "ocid1.vcn.oc1.iad.amaaaaaa7rhxvoaacurkzqrphcb6uvyphcn5kzdhouoed5zlc62eyrefugoa"
-          },
-          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo5MDAwMDAwMDAwMDAsImRlbGV0ZSI6OTAwMDAwMDAwMDAwLCJ1cGRhdGUiOjkwMDAwMDAwMDAwMH19",
-          "dependencies": [
-            "oci_core_vcn.vcn",
-            "random_pet.name"
-          ]
-        }
-      ]
-    },
-    {
-      "mode": "managed",
-      "type": "oci_core_nat_gateway",
-      "name": "ng1",
-      "each": "list",
-      "provider": "provider.oci",
-      "instances": [
-        {
-          "index_key": 0,
-          "schema_version": 0,
-          "attributes": {
-            "block_traffic": false,
-            "compartment_id": "ocid1.compartment.oc1..aaaaaaaafxezajxlyjxkh23ux75iqttja2qvdded3fc3v5h4kth6zvhnus3q",
-            "defined_tags": {
-              "Oracle-Tag.CreatedBy": "oguz",
-              "Oracle-Tag.CreatedOn": "2020-06-12T06:27:12.780Z"
-            },
-            "display_name": "quality-midge_nat-gateway",
-            "freeform_tags": {},
-            "id": "ocid1.natgateway.oc1.iad.aaaaaaaaekvojfuijaqbus3rjujxzjnjpgtkyia2qxqdl4rkue3mae5wzi6a",
-            "nat_ip": "129.213.8.92",
-            "state": "AVAILABLE",
-            "time_created": "2020-06-12 06:27:12.972 +0000 UTC",
-            "timeouts": null,
-            "vcn_id": "ocid1.vcn.oc1.iad.amaaaaaa7rhxvoaacurkzqrphcb6uvyphcn5kzdhouoed5zlc62eyrefugoa"
-          },
-          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo5MDAwMDAwMDAwMDAsImRlbGV0ZSI6OTAwMDAwMDAwMDAwLCJ1cGRhdGUiOjkwMDAwMDAwMDAwMH19",
-          "dependencies": [
-            "oci_core_vcn.vcn",
-            "random_pet.name"
-          ]
-        }
-      ]
-    },
-    {
-      "mode": "managed",
-      "type": "oci_core_route_table",
-      "name": "private_route_table",
-      "each": "list",
-      "provider": "provider.oci",
-      "instances": [
-        {
-          "index_key": 0,
-          "schema_version": 0,
-          "attributes": {
-            "compartment_id": "ocid1.compartment.oc1..aaaaaaaafxezajxlyjxkh23ux75iqttja2qvdded3fc3v5h4kth6zvhnus3q",
-            "defined_tags": {
-              "Oracle-Tag.CreatedBy": "oguz",
-              "Oracle-Tag.CreatedOn": "2020-06-12T06:27:13.673Z"
-            },
-            "display_name": "quality-midge_private_route_table",
-            "freeform_tags": {},
-            "id": "ocid1.routetable.oc1.iad.aaaaaaaad4syvyfwilxskvlhtvy2v5p2c4brc7u4ddtselbv5qj6zbtvnqja",
-            "route_rules": [
-              {
-                "cidr_block": "",
-                "description": "",
-                "destination": "0.0.0.0/0",
-                "destination_type": "CIDR_BLOCK",
-                "network_entity_id": "ocid1.natgateway.oc1.iad.aaaaaaaaekvojfuijaqbus3rjujxzjnjpgtkyia2qxqdl4rkue3mae5wzi6a"
-              }
-            ],
-            "state": "AVAILABLE",
-            "time_created": "2020-06-12 06:27:13.702 +0000 UTC",
-            "timeouts": null,
-            "vcn_id": "ocid1.vcn.oc1.iad.amaaaaaa7rhxvoaacurkzqrphcb6uvyphcn5kzdhouoed5zlc62eyrefugoa"
-          },
-          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo5MDAwMDAwMDAwMDAsImRlbGV0ZSI6OTAwMDAwMDAwMDAwLCJ1cGRhdGUiOjkwMDAwMDAwMDAwMH19",
-          "dependencies": [
-            "oci_core_nat_gateway.ng1",
-            "oci_core_vcn.vcn",
-            "random_pet.name"
-          ]
-        }
-      ]
-    },
-    {
-      "mode": "managed",
-      "type": "oci_core_route_table",
-      "name": "public_route_table",
-      "each": "list",
-      "provider": "provider.oci",
-      "instances": [
-        {
-          "index_key": 0,
-          "schema_version": 0,
-          "attributes": {
-            "compartment_id": "ocid1.compartment.oc1..aaaaaaaafxezajxlyjxkh23ux75iqttja2qvdded3fc3v5h4kth6zvhnus3q",
-            "defined_tags": {
-              "Oracle-Tag.CreatedBy": "oguz",
-              "Oracle-Tag.CreatedOn": "2020-06-12T06:27:13.232Z"
-            },
-            "display_name": "quality-midge_public_route_table",
-            "freeform_tags": {},
-            "id": "ocid1.routetable.oc1.iad.aaaaaaaa56qjsly6pznvydlsy6du5tqhd3k5qhhqn26naqzbidqsepur5slq",
-            "route_rules": [
-              {
-                "cidr_block": "",
-                "description": "",
-                "destination": "0.0.0.0/0",
-                "destination_type": "CIDR_BLOCK",
-                "network_entity_id": "ocid1.internetgateway.oc1.iad.aaaaaaaaadz73bauwd3d7jhnf3zl43g3wo7vlyfawy52tz23zkeunlk4sc4a"
-              }
-            ],
-            "state": "AVAILABLE",
-            "time_created": "2020-06-12 06:27:13.254 +0000 UTC",
-            "timeouts": null,
-            "vcn_id": "ocid1.vcn.oc1.iad.amaaaaaa7rhxvoaacurkzqrphcb6uvyphcn5kzdhouoed5zlc62eyrefugoa"
-          },
-          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo5MDAwMDAwMDAwMDAsImRlbGV0ZSI6OTAwMDAwMDAwMDAwLCJ1cGRhdGUiOjkwMDAwMDAwMDAwMH19",
-          "dependencies": [
-            "oci_core_internet_gateway.ig1",
-            "oci_core_vcn.vcn",
-            "random_pet.name"
-          ]
-        }
-      ]
-    },
-    {
-      "mode": "managed",
-      "type": "oci_core_security_list",
-      "name": "internal-security-list",
-      "each": "list",
-      "provider": "provider.oci",
-      "instances": [
-        {
-          "index_key": 0,
-          "schema_version": 0,
-          "attributes": {
-            "compartment_id": "ocid1.compartment.oc1..aaaaaaaafxezajxlyjxkh23ux75iqttja2qvdded3fc3v5h4kth6zvhnus3q",
-            "defined_tags": {
-              "Oracle-Tag.CreatedBy": "oguz",
-              "Oracle-Tag.CreatedOn": "2020-06-12T06:27:12.971Z"
-            },
-            "display_name": "securitylist20200612062712",
-            "egress_security_rules": [
-              {
-                "description": "",
-                "destination": "0.0.0.0/0",
-                "destination_type": "CIDR_BLOCK",
-                "icmp_options": [],
-                "protocol": "all",
-                "stateless": false,
-                "tcp_options": [],
-                "udp_options": []
-              }
-            ],
-            "freeform_tags": {},
-            "id": "ocid1.securitylist.oc1.iad.aaaaaaaarxwwv6aympznmv467fodlyaxmpgmc77ksacefwo5s3mqxdaa4dvq",
-            "ingress_security_rules": [
-              {
-                "description": "",
-                "icmp_options": [
-                  {
-                    "code": -1,
-                    "type": 3
-                  }
-                ],
-                "protocol": "1",
-                "source": "172.16.0.0/23",
-                "source_type": "CIDR_BLOCK",
-                "stateless": false,
-                "tcp_options": [],
-                "udp_options": []
-              },
-              {
-                "description": "",
-                "icmp_options": [
-                  {
-                    "code": 4,
-                    "type": 3
-                  }
-                ],
-                "protocol": "1",
-                "source": "0.0.0.0/0",
-                "source_type": "CIDR_BLOCK",
-                "stateless": false,
-                "tcp_options": [],
-                "udp_options": []
-              },
-              {
-                "description": "",
-                "icmp_options": [],
-                "protocol": "all",
-                "source": "172.16.0.0/23",
-                "source_type": "CIDR_BLOCK",
-                "stateless": false,
-                "tcp_options": [],
-                "udp_options": []
-              }
-            ],
-            "state": "AVAILABLE",
-            "time_created": "2020-06-12 06:27:12.985 +0000 UTC",
-            "timeouts": null,
-            "vcn_id": "ocid1.vcn.oc1.iad.amaaaaaa7rhxvoaacurkzqrphcb6uvyphcn5kzdhouoed5zlc62eyrefugoa"
-          },
-          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo5MDAwMDAwMDAwMDAsImRlbGV0ZSI6OTAwMDAwMDAwMDAwLCJ1cGRhdGUiOjkwMDAwMDAwMDAwMH19",
-          "dependencies": [
-            "oci_core_vcn.vcn",
-            "random_pet.name"
-          ]
-        }
-      ]
-    },
-    {
-      "mode": "managed",
-      "type": "oci_core_security_list",
-      "name": "public-security-list",
-      "each": "list",
-      "provider": "provider.oci",
-      "instances": [
-        {
-          "index_key": 0,
-          "schema_version": 0,
-          "attributes": {
-            "compartment_id": "ocid1.compartment.oc1..aaaaaaaafxezajxlyjxkh23ux75iqttja2qvdded3fc3v5h4kth6zvhnus3q",
-            "defined_tags": {
-              "Oracle-Tag.CreatedBy": "oguz",
-              "Oracle-Tag.CreatedOn": "2020-06-12T06:27:12.921Z"
-            },
-            "display_name": "securitylist20200612062712",
-            "egress_security_rules": [
-              {
-                "description": "",
-                "destination": "0.0.0.0/0",
-                "destination_type": "CIDR_BLOCK",
-                "icmp_options": [],
-                "protocol": "all",
-                "stateless": false,
-                "tcp_options": [],
-                "udp_options": []
-              }
-            ],
-            "freeform_tags": {},
-            "id": "ocid1.securitylist.oc1.iad.aaaaaaaafqtdpn4di773hh2c4fbfduxibuz4jg2eu4jdu6kor457i6tcgqaa",
-            "ingress_security_rules": [
-              {
-                "description": "",
-                "icmp_options": [
-                  {
-                    "code": -1,
-                    "type": 3
-                  }
-                ],
-                "protocol": "1",
-                "source": "172.16.0.0/23",
-                "source_type": "CIDR_BLOCK",
-                "stateless": false,
-                "tcp_options": [],
-                "udp_options": []
-              },
-              {
-                "description": "",
-                "icmp_options": [
-                  {
-                    "code": 4,
-                    "type": 3
-                  }
-                ],
-                "protocol": "1",
-                "source": "0.0.0.0/0",
-                "source_type": "CIDR_BLOCK",
-                "stateless": false,
-                "tcp_options": [],
-                "udp_options": []
-              },
-              {
-                "description": "",
-                "icmp_options": [],
-                "protocol": "6",
-                "source": "0.0.0.0/0",
-                "source_type": "CIDR_BLOCK",
-                "stateless": false,
-                "tcp_options": [
-                  {
-                    "max": 22,
-                    "min": 22,
-                    "source_port_range": []
-                  }
-                ],
-                "udp_options": []
-              },
-              {
-                "description": "",
-                "icmp_options": [],
-                "protocol": "all",
-                "source": "172.16.0.0/23",
-                "source_type": "CIDR_BLOCK",
-                "stateless": false,
-                "tcp_options": [],
-                "udp_options": []
-              }
-            ],
-            "state": "AVAILABLE",
-            "time_created": "2020-06-12 06:27:12.946 +0000 UTC",
-            "timeouts": null,
-            "vcn_id": "ocid1.vcn.oc1.iad.amaaaaaa7rhxvoaacurkzqrphcb6uvyphcn5kzdhouoed5zlc62eyrefugoa"
-          },
-          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo5MDAwMDAwMDAwMDAsImRlbGV0ZSI6OTAwMDAwMDAwMDAwLCJ1cGRhdGUiOjkwMDAwMDAwMDAwMH19",
-          "dependencies": [
-            "oci_core_vcn.vcn",
-            "random_pet.name"
-          ]
-        }
-      ]
-    },
-    {
-      "mode": "managed",
-      "type": "oci_core_subnet",
-      "name": "private-subnet",
-      "each": "list",
-      "provider": "provider.oci",
-      "instances": [
-        {
-          "index_key": 0,
-          "schema_version": 0,
-          "attributes": {
-            "availability_domain": null,
-            "cidr_block": "172.16.1.0/24",
-            "compartment_id": "ocid1.compartment.oc1..aaaaaaaafxezajxlyjxkh23ux75iqttja2qvdded3fc3v5h4kth6zvhnus3q",
-            "defined_tags": {
-              "Oracle-Tag.CreatedBy": "oguz",
-              "Oracle-Tag.CreatedOn": "2020-06-12T06:27:13.950Z"
-            },
-            "dhcp_options_id": "ocid1.dhcpoptions.oc1.iad.aaaaaaaaeshhru3h7y5i5d2mqhdaf4fbxexe2qu4ie25435xwuu7ppasanzq",
-            "display_name": "quality-midge_private_subnet",
-            "dns_label": "private",
-            "freeform_tags": {},
-            "id": "ocid1.subnet.oc1.iad.aaaaaaaaa7kkt4vo7fvo6ajfal55cipkk7eradhqmpj6gpza6y7efsudwdsa",
-            "ipv6cidr_block": null,
-            "ipv6public_cidr_block": null,
-            "ipv6virtual_router_ip": null,
-            "prohibit_public_ip_on_vnic": true,
-            "route_table_id": "ocid1.routetable.oc1.iad.aaaaaaaad4syvyfwilxskvlhtvy2v5p2c4brc7u4ddtselbv5qj6zbtvnqja",
-            "security_list_ids": [
-              "ocid1.securitylist.oc1.iad.aaaaaaaarxwwv6aympznmv467fodlyaxmpgmc77ksacefwo5s3mqxdaa4dvq"
-            ],
-            "state": "AVAILABLE",
-            "subnet_domain_name": "private.cluster.oraclevcn.com",
-            "time_created": "2020-06-12 06:27:13.992 +0000 UTC",
-            "timeouts": null,
-            "vcn_id": "ocid1.vcn.oc1.iad.amaaaaaa7rhxvoaacurkzqrphcb6uvyphcn5kzdhouoed5zlc62eyrefugoa",
-            "virtual_router_ip": "172.16.1.1",
-            "virtual_router_mac": "00:00:17:AA:D1:BA"
-          },
-          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo5MDAwMDAwMDAwMDAsImRlbGV0ZSI6OTAwMDAwMDAwMDAwLCJ1cGRhdGUiOjkwMDAwMDAwMDAwMH19",
-          "dependencies": [
-            "oci_core_nat_gateway.ng1",
-            "oci_core_route_table.private_route_table",
-            "oci_core_security_list.internal-security-list",
-            "oci_core_vcn.vcn",
-            "random_pet.name"
-          ]
-        }
-      ]
-    },
-    {
-      "mode": "managed",
-      "type": "oci_core_subnet",
-      "name": "public-subnet",
-      "each": "list",
-      "provider": "provider.oci",
-      "instances": [
-        {
-          "index_key": 0,
-          "schema_version": 0,
-          "attributes": {
-            "availability_domain": null,
-            "cidr_block": "172.16.0.0/24",
-            "compartment_id": "ocid1.compartment.oc1..aaaaaaaafxezajxlyjxkh23ux75iqttja2qvdded3fc3v5h4kth6zvhnus3q",
-            "defined_tags": {
-              "Oracle-Tag.CreatedBy": "oguz",
-              "Oracle-Tag.CreatedOn": "2020-06-12T06:27:13.445Z"
-            },
-            "dhcp_options_id": "ocid1.dhcpoptions.oc1.iad.aaaaaaaaeshhru3h7y5i5d2mqhdaf4fbxexe2qu4ie25435xwuu7ppasanzq",
-            "display_name": "quality-midge_public_subnet",
-            "dns_label": "public",
-            "freeform_tags": {},
-            "id": "ocid1.subnet.oc1.iad.aaaaaaaa5bunnt4e3fl46ohmna2azt7wz6hgpj7m2p4asfc6mczdaurb4oaq",
-            "ipv6cidr_block": null,
-            "ipv6public_cidr_block": null,
-            "ipv6virtual_router_ip": null,
-            "prohibit_public_ip_on_vnic": false,
-            "route_table_id": "ocid1.routetable.oc1.iad.aaaaaaaa56qjsly6pznvydlsy6du5tqhd3k5qhhqn26naqzbidqsepur5slq",
-            "security_list_ids": [
-              "ocid1.securitylist.oc1.iad.aaaaaaaafqtdpn4di773hh2c4fbfduxibuz4jg2eu4jdu6kor457i6tcgqaa"
-            ],
-            "state": "AVAILABLE",
-            "subnet_domain_name": "public.cluster.oraclevcn.com",
-            "time_created": "2020-06-12 06:27:14.258 +0000 UTC",
-            "timeouts": null,
-            "vcn_id": "ocid1.vcn.oc1.iad.amaaaaaa7rhxvoaacurkzqrphcb6uvyphcn5kzdhouoed5zlc62eyrefugoa",
-            "virtual_router_ip": "172.16.0.1",
-            "virtual_router_mac": "00:00:17:AA:D1:BA"
-          },
-          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo5MDAwMDAwMDAwMDAsImRlbGV0ZSI6OTAwMDAwMDAwMDAwLCJ1cGRhdGUiOjkwMDAwMDAwMDAwMH19",
-          "dependencies": [
-            "oci_core_internet_gateway.ig1",
-            "oci_core_route_table.public_route_table",
-            "oci_core_security_list.public-security-list",
-            "oci_core_vcn.vcn",
-            "random_pet.name"
-          ]
-        }
-      ]
-    },
-    {
-      "mode": "managed",
-      "type": "oci_core_vcn",
-      "name": "vcn",
-      "each": "list",
-      "provider": "provider.oci",
-      "instances": [
-        {
-          "index_key": 0,
-          "schema_version": 0,
-          "attributes": {
-            "cidr_block": "172.16.0.0/23",
-            "compartment_id": "ocid1.compartment.oc1..aaaaaaaafxezajxlyjxkh23ux75iqttja2qvdded3fc3v5h4kth6zvhnus3q",
-            "default_dhcp_options_id": "ocid1.dhcpoptions.oc1.iad.aaaaaaaaeshhru3h7y5i5d2mqhdaf4fbxexe2qu4ie25435xwuu7ppasanzq",
-            "default_route_table_id": "ocid1.routetable.oc1.iad.aaaaaaaassfmha3vbissschmyxo7ddi23fnhlszgppzzsadbtav6ksr7dcnq",
-            "default_security_list_id": "ocid1.securitylist.oc1.iad.aaaaaaaa6vu74elvte3gmh3b5lxfx4x6ukftfnallsbcgsdzkenr4mt5netq",
-            "defined_tags": {
-              "Oracle-Tag.CreatedBy": "oguz",
-              "Oracle-Tag.CreatedOn": "2020-06-12T06:27:12.390Z"
-            },
-            "display_name": "quality-midge_VCN",
-            "dns_label": "cluster",
-            "freeform_tags": {},
-            "id": "ocid1.vcn.oc1.iad.amaaaaaa7rhxvoaacurkzqrphcb6uvyphcn5kzdhouoed5zlc62eyrefugoa",
-            "ipv6cidr_block": null,
-            "ipv6public_cidr_block": null,
-            "is_ipv6enabled": null,
-            "state": "AVAILABLE",
-            "time_created": "2020-06-12 06:27:12.395 +0000 UTC",
-            "timeouts": null,
-            "vcn_domain_name": "cluster.oraclevcn.com"
-          },
-          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo5MDAwMDAwMDAwMDAsImRlbGV0ZSI6OTAwMDAwMDAwMDAwLCJ1cGRhdGUiOjkwMDAwMDAwMDAwMH19",
-          "dependencies": [
-            "random_pet.name"
-          ]
-        }
-      ]
-    },
-    {
-      "mode": "managed",
-      "type": "random_pet",
-      "name": "name",
-      "provider": "provider.random",
-      "instances": [
-        {
-          "schema_version": 0,
-          "attributes": {
-            "id": "quality-midge",
-            "keepers": null,
-            "length": 2,
-            "prefix": null,
-            "separator": "-"
-          },
-          "private": "bnVsbA=="
-        }
-      ]
-    },
-    {
-      "mode": "managed",
-      "type": "tls_private_key",
-      "name": "ssh",
-      "provider": "provider.tls",
-      "instances": [
-        {
-          "schema_version": 0,
-          "attributes": {
-            "algorithm": "RSA",
-            "ecdsa_curve": "P224",
-            "id": "15f090850a7583dcd7d6f4469349867b87c7bcac",
-            "private_key_pem": "-----BEGIN RSA PRIVATE KEY-----\n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\n-----END RSA PRIVATE KEY-----\n",
-            "public_key_fingerprint_md5": "15:17:b4:83:88:87:c0:46:64:2f:c0:ae:36:c8:01:09",
-            "public_key_openssh": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDS/B4OGJGblgVc/7VFtLFv3eEZd4n9wo0b6Z6UJu+ZAI90WhBuDCcNhRT7YYdhOByXcOA19a3GZdpdfaELdsl6nb00eXXF8FrmAbDuKZitUAfTPHKAAG4TICiri1yOXMe3FQc19V35W3K9UxAF45wgtgaRRmer0ca6cQpUXYLZcgJLApZPA8g8ZvejmQYS1Mb4EKoi6+tSIIFd2rGtzf+Yjlbme2mvkcSIBqSRMdnPIntSHqWQUegqqKo88GHbL34Z1t1RcIwdtwHxbXUjzuxra+UjEC1HIk9ac6cMIqyxkdHh1II0Uq8z8oPAyUVYs1FpEbgGabC3Y6slh76OA6inCDr4ctzwDr2Iw9Az0G8ZBx2S6NxIynbBJbd/DdSbispWMC7R6oZPJbfvYqYlXoyMI/9TgKbG4yMxTRgOTX4ofp3y+IXDXTf8mu0aqV65eiaD7+d2etC8tnIjVX715c/u/a6jZ9X9VoRR/xoahLfNeEzXujgjDqbfRC10KkeZes6eC3TMXS9xmv+AGW/1FELVXZBWyCRLW66BBWG33lEtkkH7ao1e07jZQKZI2RgAs+PpoEmnWkjj8rM1DexUjyWzk4Y1k9efIEA3ynxudwEn7e4b8fqkx5dMWD6rLZ7/phEC7+GSG6mJCxOooJT1nLHm0pp8kvtIKCCWPubWT5uTcw==\n",
-            "public_key_pem": "-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA0vweDhiRm5YFXP+1RbSx\nb93hGXeJ/cKNG+melCbvmQCPdFoQbgwnDYUU+2GHYTgcl3DgNfWtxmXaXX2hC3bJ\nep29NHl1xfBa5gGw7imYrVAH0zxygABuEyAoq4tcjlzHtxUHNfVd+VtyvVMQBeOc\nILYGkUZnq9HGunEKVF2C2XICSwKWTwPIPGb3o5kGEtTG+BCqIuvrUiCBXdqxrc3/\nmI5W5ntpr5HEiAakkTHZzyJ7Uh6lkFHoKqiqPPBh2y9+GdbdUXCMHbcB8W11I87s\na2vlIxAtRyJPWnOnDCKssZHR4dSCNFKvM/KDwMlFWLNRaRG4Bmmwt2OrJYe+jgOo\npwg6+HLc8A69iMPQM9BvGQcdkujcSMp2wSW3fw3Um4rKVjAu0eqGTyW372KmJV6M\njCP/U4CmxuMjMU0YDk1+KH6d8viFw103/JrtGqleuXomg+/ndnrQvLZyI1V+9eXP\n7v2uo2fV/VaEUf8aGoS3zXhM17o4Iw6m30QtdCpHmXrOngt0zF0vcZr/gBlv9RRC\n1V2QVsgkS1uugQVht95RLZJB+2qNXtO42UCmSNkYALPj6aBJp1pI4/KzNQ3sVI8l\ns5OGNZPXnyBAN8p8bncBJ+3uG/H6pMeXTFg+qy2e/6YRAu/hkhupiQsTqKCU9Zyx\n5tKafJL7SCgglj7m1k+bk3MCAwEAAQ==\n-----END PUBLIC KEY-----\n",
-            "rsa_bits": 4096
-          },
-          "private": "bnVsbA=="
-        }
-      ]
-    }
-  ]
-}
+  {
+    "type": "TERRAFORM_CONSOLE",
+    "level": "INFO",
+    "timestamp": "2020-06-12T22:25:55.846Z",
+    "message": "Initializing provider plugins..."
+  },
+  {
+    "type": "TERRAFORM_CONSOLE",
+    "level": "INFO",
+    "timestamp": "2020-06-12T22:25:55.846Z",
+    "message": ""
+  },
+  {
+    "type": "TERRAFORM_CONSOLE",
+    "level": "INFO",
+    "timestamp": "2020-06-12T22:25:55.846Z",
+    "message": "The following providers do not have any version constraints in configuration,"
+  },
+  {
+    "type": "TERRAFORM_CONSOLE",
+    "level": "INFO",
+    "timestamp": "2020-06-12T22:25:55.846Z",
+    "message": "so the latest version was installed."
+  },
+  {
+    "type": "TERRAFORM_CONSOLE",
+    "level": "INFO",
+    "timestamp": "2020-06-12T22:25:55.846Z",
+    "message": ""
+  },
+  {
+    "type": "TERRAFORM_CONSOLE",
+    "level": "INFO",
+    "timestamp": "2020-06-12T22:25:55.846Z",
+    "message": "To prevent automatic upgrades to new major versions that may contain breaking"
+  },
+  {
+    "type": "TERRAFORM_CONSOLE",
+    "level": "INFO",
+    "timestamp": "2020-06-12T22:25:55.846Z",
+    "message": "changes, it is recommended to add version = \"...\" constraints to the"
+  },
+  {
+    "type": "TERRAFORM_CONSOLE",
+    "level": "INFO",
+    "timestamp": "2020-06-12T22:25:55.846Z",
+    "message": "corresponding provider blocks in configuration, with the constraint strings"
+  },
+  {
+    "type": "TERRAFORM_CONSOLE",
+    "level": "INFO",
+    "timestamp": "2020-06-12T22:25:55.846Z",
+    "message": "suggested below."
+  },
+  {
+    "type": "TERRAFORM_CONSOLE",
+    "level": "INFO",
+    "timestamp": "2020-06-12T22:25:55.846Z",
+    "message": ""
+  },
+  {
+    "type": "TERRAFORM_CONSOLE",
+    "level": "INFO",
+    "timestamp": "2020-06-12T22:25:55.846Z",
+    "message": "* provider.oci: version = \"~\u003e 3.80\""
+  },
+  {
+    "type": "TERRAFORM_CONSOLE",
+    "level": "INFO",
+    "timestamp": "2020-06-12T22:25:55.846Z",
+    "message": ""
+  },
+  {
+    "type": "TERRAFORM_CONSOLE",
+    "level": "INFO",
+    "timestamp": "2020-06-12T22:25:55.846Z",
+    "message": "Terraform has been successfully initialized!"
+  },
+  {
+    "type": "TERRAFORM_CONSOLE",
+    "level": "INFO",
+    "timestamp": "2020-06-12T22:25:55.846Z",
+    "message": ""
+  },
+  {
+    "type": "TERRAFORM_CONSOLE",
+    "level": "INFO",
+    "timestamp": "2020-06-12T22:25:55.846Z",
+    "message": "You may now begin working with Terraform. Try running \"terraform plan\" to see"
+  },
+  {
+    "type": "TERRAFORM_CONSOLE",
+    "level": "INFO",
+    "timestamp": "2020-06-12T22:25:55.846Z",
+    "message": "any changes that are required for your infrastructure. All Terraform commands"
+  },
+  {
+    "type": "TERRAFORM_CONSOLE",
+    "level": "INFO",
+    "timestamp": "2020-06-12T22:25:55.846Z",
+    "message": "should now work."
+  },
+  {
+    "type": "TERRAFORM_CONSOLE",
+    "level": "INFO",
+    "timestamp": "2020-06-12T22:25:55.846Z",
+    "message": ""
+  },
+  {
+    "type": "TERRAFORM_CONSOLE",
+    "level": "INFO",
+    "timestamp": "2020-06-12T22:25:55.846Z",
+    "message": "If you ever set or change modules or backend configuration for Terraform,"
+  },
+  {
+    "type": "TERRAFORM_CONSOLE",
+    "level": "INFO",
+    "timestamp": "2020-06-12T22:25:55.846Z",
+    "message": "rerun this command to reinitialize your working directory. If you forget, other"
+  },
+  {
+    "type": "TERRAFORM_CONSOLE",
+    "level": "INFO",
+    "timestamp": "2020-06-12T22:25:55.846Z",
+    "message": "commands will detect it and remind you to do so if necessary."
+  },
+  {
+    "type": "TERRAFORM_CONSOLE",
+    "level": "INFO",
+    "timestamp": "2020-06-12T22:25:58.847Z",
+    "message": "data.oci_identity_availability_domains.this: Refreshing state..."
+  },
+  {
+    "type": "TERRAFORM_CONSOLE",
+    "level": "INFO",
+    "timestamp": "2020-06-12T22:26:01.847Z",
+    "message": "oci_core_vcn.this: Creating..."
+  },
+  {
+    "type": "TERRAFORM_CONSOLE",
+    "level": "INFO",
+    "timestamp": "2020-06-12T22:26:02.12Z",
+    "message": ""
+  },
+  {
+    "type": "TERRAFORM_CONSOLE",
+    "level": "INFO",
+    "timestamp": "2020-06-12T22:26:02.12Z",
+    "message": "Error: Service error:LimitExceeded. The following service limits were exceeded: vcn-count. Request a service limit increase from the service limits page in the console. . http status code: 400. Opc request id: 7c8ac58d4ecc9ad4b6fe67ebecf1ac77/E48507910950A5C866EBA072F87BBECB/87A8E992292EEAF7DEB5344D58B3A9A8"
+  },
+  {
+    "type": "TERRAFORM_CONSOLE",
+    "level": "INFO",
+    "timestamp": "2020-06-12T22:26:02.12Z",
+    "message": ""
+  },
+  {
+    "type": "TERRAFORM_CONSOLE",
+    "level": "INFO",
+    "timestamp": "2020-06-12T22:26:02.12Z",
+    "message": "  on main.tf line 9, in resource \"oci_core_vcn\" \"this\":"
+  },
+  {
+    "type": "TERRAFORM_CONSOLE",
+    "level": "INFO",
+    "timestamp": "2020-06-12T22:26:02.12Z",
+    "message": "   9:     resource oci_core_vcn this {"
+  },
+  {
+    "type": "TERRAFORM_CONSOLE",
+    "level": "INFO",
+    "timestamp": "2020-06-12T22:26:02.12Z",
+    "message": ""
+  },
+  {
+    "type": "TERRAFORM_CONSOLE",
+    "level": "INFO",
+    "timestamp": "2020-06-12T22:26:02.12Z",
+    "message": ""
+  },
+  {
+    "type": "TERRAFORM_CONSOLE",
+    "level": "INFO",
+    "timestamp": "2020-06-12T22:26:02.12Z",
+    "message": ""
+  }
+]
