@@ -75,11 +75,9 @@ Before deploying, you need to change the values in `config.json` file. The varia
 ```json
 {
   "variables": {
-    "region": "us-phoenix-1",
-    "tenancy_ocid": "ocid1.tenancy.oc1.....utinobtayaykdasoygtnpko7buq",
-    "compartment_ocid": "ocid1.compartment.oc1..hnus3q",
     "ad": "kWVD:PHX-AD-1",
     "bastion_ad": "kWVD:PHX-AD-2",
+    "bastion_shape": "VM.Standard2.1",
     "node_count": "2",
     "ssh_key": "ssh-rsa AAAAB3NzaC1yc2EAAAA......W6 opastirm@opastirm-mac"
   }
