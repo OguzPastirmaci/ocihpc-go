@@ -21,6 +21,15 @@ import (
 	"github.com/spf13/cobra"
 )
 
+type Stack struct {
+	StackName string `json:"stackName,omitempty"`
+	StackID   string `json:"stackID,omitempty"`
+	StackIP   string `json:"stackIP,omitempty"`
+	JobID     string `json:"jobID,omitempty"`
+}
+
+var s Stack
+
 var deployCmd = &cobra.Command{
 	Use:     "deploy",
 	Aliases: []string{"create"},
@@ -30,6 +39,7 @@ Example command: ocihpc deploy --stack ClusterNetwork --node-count 2 --region us
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		stack, _ := cmd.Flags().GetString("stack")
+		s.StackName = stack
 		region, _ := cmd.Flags().GetString("region")
 		compartmentID, _ := cmd.Flags().GetString("compartment-id")
 		nodeCount, _ := cmd.Flags().GetString("node-count")
@@ -41,17 +51,15 @@ Example command: ocihpc deploy --stack ClusterNetwork --node-count 2 --region us
 
 		provider := common.DefaultConfigProvider()
 		client, err := resourcemanager.NewResourceManagerClientWithConfigurationProvider(provider)
-		if err != nil {
-			panic(err)
-		}
 		helpers.FatalIfError(err)
+
 		ctx := context.Background()
 
-		stackID := createStack(ctx, provider, client, compartmentID, region, stack, nodeCount)
-		addStackInfo(stackID)
+		s.StackID = createStack(ctx, provider, client, compartmentID, region, stack, nodeCount)
+		addStackInfo(s)
 
-		applyJobID := createApplyJob(ctx, provider, client, stackID, region, stack)
-		addJobInfo(applyJobID)
+		s.JobID = createApplyJob(ctx, provider, client, s.StackID, region, stack)
+		addStackInfo(s)
 
 	},
 }
@@ -83,9 +91,8 @@ func createStack(ctx context.Context, provider common.ConfigurationProvider, cli
 
 	// read config.json
 	file, err := os.Open("config.json")
-	if err != nil {
-		log.Fatal(err)
-	}
+	helpers.FatalIfError(err)
+
 	defer file.Close()
 	var config map[string]string
 	if err := json.NewDecoder(file).Decode(&config); err != nil {
@@ -142,11 +149,6 @@ func createStack(ctx context.Context, provider common.ConfigurationProvider, cli
 
 func createApplyJob(ctx context.Context, provider common.ConfigurationProvider, client resourcemanager.ResourceManagerClient, stackID string, region string, stack string) string {
 
-	outputQuery := map[string]string{
-		"ClusterNetwork": "outputs.bastion.value",
-		"vcn":            "outputs.vcn_id.value",
-	}
-
 	applyJobReq := resourcemanager.CreateJobRequest{
 		CreateJobDetails: resourcemanager.CreateJobDetails{
 			StackId:   common.String(stackID),
@@ -192,12 +194,10 @@ func createApplyJob(ctx context.Context, provider common.ConfigurationProvider, 
 			tfStateResp, _ := client.GetJobTfState(ctx, tfStateReq)
 			body, _ := ioutil.ReadAll(tfStateResp.Content)
 			tfStateParsed, err := gabs.ParseJSON([]byte(string(body)))
-			if err != nil {
-				log.Fatal("Error:", err)
-			}
-			var outputIP string
-			outputIP = tfStateParsed.Path(outputQuery[stack]).Data().(string)
-			fmt.Printf("\nYou can connect to your bastion/headnode using the command: ssh opc@%s -i <location of the private key>\n\n", outputIP)
+			helpers.FatalIfError(err)
+
+			s.StackIP = tfStateParsed.Path(outputQuery[stack]).Data().(string)
+			fmt.Printf("\nYou can connect to your bastion/headnode using the command: ssh opc@%s -i <location of the private key>\n\n", s.StackIP)
 			break
 		} else if readResp.LifecycleState == "FAILED" {
 			fmt.Printf("\nDeployment failed. You can run 'ocihpc get logs' to get the logs of the failed job\n")

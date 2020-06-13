@@ -5,9 +5,9 @@ package cmd
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 
+	"github.com/oracle/oci-go-sdk/example/helpers"
 	"github.com/spf13/cobra"
 )
 
@@ -20,15 +20,11 @@ Example command: ocihpc list
 	Run: func(cmd *cobra.Command, args []string) {
 		url := "https://raw.githubusercontent.com/oracle-quickstart/oci-ocihpc/master/packages/catalog"
 		resp, err := http.Get(url)
-		if err != nil {
-			log.Fatal(err)
-		}
+		helpers.FatalIfError(err)
 		defer resp.Body.Close()
 
 		respData, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			log.Fatal(err)
-		}
+		helpers.FatalIfError(err)
 
 		respString := string(respData)
 

@@ -5,6 +5,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/oracle/oci-go-sdk/example/helpers"
 	"github.com/spf13/cobra"
 )
 
@@ -38,14 +39,11 @@ func stackInit(stack string) {
 	zipFilePath := getWd() + "/" + stack + ".zip"
 
 	errConfig := downloadFile(configFilePath, configURL)
-	if errConfig != nil {
-		panic(errConfig)
-	}
+	helpers.FatalIfError(errConfig)
 
 	errZip := downloadFile(zipFilePath, zipURL)
-	if errZip != nil {
-		panic(errZip)
-	}
+	helpers.FatalIfError(errZip)
+
 	fmt.Println("\n\nDownloaded stack " + stack)
 	fmt.Printf("\nIMPORTANT: Edit the contents of the %s file before running ocihpc deploy command\n\n", configFilePath)
 }

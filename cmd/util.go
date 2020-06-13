@@ -3,61 +3,88 @@
 package cmd
 
 import (
+	"encoding/json"
 	"io"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"os"
 
-	"github.com/jeffail/gabs"
+	"github.com/oracle/oci-go-sdk/example/helpers"
 )
 
-func getJSON(filename string, value string) string {
+var filename = ".stackinfo.json"
 
-	data, err := ioutil.ReadFile(filename)
-	if err != nil {
-		log.Fatal(err)
-	}
+func getStackName() string {
 
-	jsonParsed, err := gabs.ParseJSON(data)
-	result := jsonParsed.Path(value).Data().(string)
-	return result
+	content, err := ioutil.ReadFile(filename)
+	helpers.FatalIfError(err)
+
+	var info Stack
+	json.Unmarshal([]byte(content), &info)
+
+	return info.StackName
+}
+
+func getStackID() string {
+
+	content, err := ioutil.ReadFile(filename)
+	helpers.FatalIfError(err)
+
+	var info Stack
+	json.Unmarshal([]byte(content), &info)
+
+	return info.StackID
+}
+
+func getStackIP() string {
+
+	content, err := ioutil.ReadFile(filename)
+	helpers.FatalIfError(err)
+
+	var info Stack
+	json.Unmarshal([]byte(content), &info)
+
+	return info.StackIP
+}
+
+func getJobID() string {
+
+	content, err := ioutil.ReadFile(filename)
+	helpers.FatalIfError(err)
+
+	var info Stack
+	json.Unmarshal([]byte(content), &info)
+
+	return info.JobID
 }
 
 func getWd() string {
 	dir, err := os.Getwd()
-	if err != nil {
-		log.Fatal(err)
-	}
+	helpers.FatalIfError(err)
+
 	return dir
 }
 
 func downloadFile(filepath string, url string) error {
 
 	resp, err := http.Get(url)
-	if err != nil {
-		return err
-	}
+	helpers.FatalIfError(err)
+
 	defer resp.Body.Close()
 
 	out, err := os.Create(filepath)
-	if err != nil {
-		return err
-	}
+	helpers.FatalIfError(err)
+
 	defer out.Close()
 
 	_, err = io.Copy(out, resp.Body)
 	return err
 }
 
-func addStackInfo(stackID string) {
-	stackInfo := gabs.New()
-	stackInfo.Set(stackID, "stack_info", "stackID")
-	ioutil.WriteFile(".stack_info.json", []byte(stackInfo.StringIndent("", "  ")), 0644)
-}
+func addStackInfo(s Stack) {
 
-func addJobInfo(jobID string) {
-	jobInfo := gabs.New()
-	jobInfo.Set(jobID, "job_info", "jobID")
-	ioutil.WriteFile(".job_info.json", []byte(jobInfo.StringIndent("", "  ")), 0644)
+	file, _ := json.MarshalIndent(s, "", " ")
+
+	_ = ioutil.WriteFile(filename, file, 0644)
+
 }

@@ -25,16 +25,13 @@ Example command: ocihpc delete --stack ClusterNetwork`,
 		provider := common.DefaultConfigProvider()
 		stack, _ := cmd.Flags().GetString("stack")
 		client, err := resourcemanager.NewResourceManagerClientWithConfigurationProvider(provider)
-		if err != nil {
-			panic(err)
-		}
 		helpers.FatalIfError(err)
 
 		ctx := context.Background()
-		stackID := getJSON(".stack_info.json", "stack_info.stackID")
+		stackID := getStackID()
 
-		createDestroyJob(ctx, provider, client, stackID, stack)
-
+		s.JobID = createDestroyJob(ctx, provider, client, stackID, stack)
+		addStackInfo(s)
 	},
 }
 
