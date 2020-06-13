@@ -33,10 +33,11 @@ var s Stack
 var deployCmd = &cobra.Command{
 	Use:     "deploy",
 	Aliases: []string{"create"},
-	Short:   "Deploy a stack",
+	Short:   "Deploy a new stack",
 	Long: `
 Example command: ocihpc deploy --stack ClusterNetwork --node-count 2 --region us-ashburn-1 --compartment-id ocid1.compartment.oc1..nus3q
 	`,
+
 	Run: func(cmd *cobra.Command, args []string) {
 		stack, _ := cmd.Flags().GetString("stack")
 		s.StackName = stack
@@ -44,9 +45,11 @@ Example command: ocihpc deploy --stack ClusterNetwork --node-count 2 --region us
 		compartmentID, _ := cmd.Flags().GetString("compartment-id")
 		nodeCount, _ := cmd.Flags().GetString("node-count")
 
-		if _, err := strconv.Atoi(nodeCount); err != nil {
-			fmt.Printf("\nNode count must be a number, you entered: %s\n", nodeCount)
-			os.Exit(1)
+		if len(nodeCount) > 0 {
+			if _, err := strconv.Atoi(nodeCount); err != nil {
+				fmt.Printf("\nNode count must be a number, you entered: %s\n", nodeCount)
+				os.Exit(1)
+			}
 		}
 
 		provider := common.DefaultConfigProvider()
@@ -82,18 +85,19 @@ func createStack(ctx context.Context, provider common.ConfigurationProvider, cli
 	stackName := fmt.Sprintf("%s-%s", stack, helpers.GetRandomString(4))
 	tenancyID, _ := provider.TenancyOCID()
 
-	// Base64 the zip file
+	// Base64 the zip file.
 	zipFilePath := getWd() + "/" + stack + ".zip"
 	f, _ := os.Open(zipFilePath)
 	reader := bufio.NewReader(f)
 	content, _ := ioutil.ReadAll(reader)
 	encoded := base64.StdEncoding.EncodeToString(content)
 
-	// read config.json
+	// Read config.json.
 	file, err := os.Open("config.json")
 	helpers.FatalIfError(err)
 
 	defer file.Close()
+
 	var config map[string]string
 	if err := json.NewDecoder(file).Decode(&config); err != nil {
 		log.Fatal(err)
@@ -102,7 +106,7 @@ func createStack(ctx context.Context, provider common.ConfigurationProvider, cli
 	config["tenancy_ocid"] = tenancyID
 	config["compartment_ocid"] = compartment
 
-	// region override
+	// Override region if entered.
 	_, r := config["region"]
 	if r {
 		if len(region) > 0 {
@@ -112,7 +116,7 @@ func createStack(ctx context.Context, provider common.ConfigurationProvider, cli
 		config["region"] = region
 	}
 
-	// node count override
+	// Override node count if entered.
 	_, nc := config["node_count"]
 	if nc {
 		if len(nodeCount) > 0 {

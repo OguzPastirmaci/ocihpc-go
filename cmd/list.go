@@ -17,6 +17,7 @@ var listCmd = &cobra.Command{
 	Long: `
 Example command: ocihpc list
 	`,
+
 	Run: func(cmd *cobra.Command, args []string) {
 		url := "https://raw.githubusercontent.com/oracle-quickstart/oci-ocihpc/master/packages/catalog"
 		resp, err := http.Get(url)

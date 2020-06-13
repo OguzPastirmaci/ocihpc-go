@@ -20,6 +20,7 @@ var deleteCmd = &cobra.Command{
 	Short:   "Delete a deployed stack",
 	Long: `
 Example command: ocihpc delete --stack ClusterNetwork`,
+
 	Run: func(cmd *cobra.Command, args []string) {
 
 		provider := common.DefaultConfigProvider()

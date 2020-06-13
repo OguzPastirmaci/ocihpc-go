@@ -14,6 +14,13 @@ import (
 
 var filename = ".stackinfo.json"
 
+func addStackInfo(s Stack) {
+
+	file, _ := json.MarshalIndent(s, "", " ")
+
+	_ = ioutil.WriteFile(filename, file, 0644)
+}
+
 func getStackName() string {
 
 	content, err := ioutil.ReadFile(filename)
@@ -79,12 +86,4 @@ func downloadFile(filepath string, url string) error {
 
 	_, err = io.Copy(out, resp.Body)
 	return err
-}
-
-func addStackInfo(s Stack) {
-
-	file, _ := json.MarshalIndent(s, "", " ")
-
-	_ = ioutil.WriteFile(filename, file, 0644)
-
 }
