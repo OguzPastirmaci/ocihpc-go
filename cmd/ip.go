@@ -21,7 +21,7 @@ to quickly create a Cobra application.`,
 
 		stackIP := getStackIP()
 		stackName := getStackName()
-		fmt.Println("You can connect to your bastion/headnode using the following command:")
+		fmt.Printf("\nYou can connect to your bastion/headnode using the following command:\n\n")
 		fmt.Printf("ssh %s@%s -i <location of the private key>\n\n", stackUser[stackName], stackIP)
 
 	},

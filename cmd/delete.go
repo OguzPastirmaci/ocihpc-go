@@ -67,7 +67,7 @@ func createDestroyJob(ctx context.Context, provider common.ConfigurationProvider
 	destroyJobResp, err := client.CreateJob(ctx, destroyJobReq)
 
 	if err != nil {
-		fmt.Println("Delete failed with the following errors:\n\n", err)
+		fmt.Println("\nDelete failed with the following errors:\n\n", err)
 		os.Exit(1)
 	}
 
@@ -83,7 +83,7 @@ func createDestroyJob(ctx context.Context, provider common.ConfigurationProvider
 		readResp, err := client.GetJob(ctx, jobLifecycle)
 
 		if err != nil {
-			fmt.Println("Delete failed with the following errors:\n\n", err)
+			fmt.Println("\nDelete failed with the following errors:\n\n", err)
 			os.Exit(1)
 		}
 
@@ -91,7 +91,7 @@ func createDestroyJob(ctx context.Context, provider common.ConfigurationProvider
 		time.Sleep(15 * time.Second)
 		if readResp.LifecycleState == "SUCCEEDED" {
 			deleteStack(ctx, stackID, client, stack)
-			fmt.Printf("Delete completed successfully")
+			fmt.Printf("\nDelete completed successfully\n")
 			os.Remove("stack.info")
 			break
 		} else if readResp.LifecycleState == "FAILED" {
