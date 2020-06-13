@@ -35,14 +35,14 @@ $ export PATH=$PATH:<the path where you cloned the repository into>
 ## Using ocihpc
 
 ### 1 - List
-You can get the list of available packages by running `ocihpc list`.
+You can get the list of available stacks by running `ocihpc list`.
 
 Example:
 
 ```sh
 $ ocihpc list
 
-List of available packages:
+List of available stacks:
 
 ClusterNetwork
 Gromacs
@@ -52,9 +52,9 @@ OpenFOAM
 ### 2 - Initialize
 Create a folder that you will use as the deployment source.
 
-IMPORTANT: Use a different folder per package. Do not initialize more than one package in the same folder. Otherwise, the tool will overwrite the previous one.
+IMPORTANT: Use a different folder per stack. Do not initialize more than one stack in the same folder. Otherwise, the tool will overwrite the previous one.
 
-Change to that folder and run `ocihpc init <package name>`. `ocihpc` will download the necessary files to that folder.
+Change to that folder and run `ocihpc init <stack name>`. `ocihpc` will download the necessary files to that folder.
 
 
 ```
@@ -62,15 +62,15 @@ $ mkdir ocihpc-test
 $ cd ocihpc-test
 $ ocihpc init ClusterNetwork
 
-Downlading package: ClusterNetwork
+Downlading stack: ClusterNetwork
 
-Package ClusterNetwork downloaded to /Users/opastirm/ocihpc-test/
+stack ClusterNetwork downloaded to /Users/opastirm/ocihpc-test/
 
 IMPORTANT: Edit the contents of the /Users/opastirm/ocihpc-test/config.json file before running ocihpc deploy command
 ```
 
 ### 3 - Deploy
-Before deploying, you need to change the values in `config.json` file. The variables depend on the package you deploy. An example `config.json` for Cluster Network would look like this:
+Before deploying, you need to change the values in `config.json` file. The variables depend on the stack you deploy. An example `config.json` for Cluster Network would look like this:
 
 ```json
 {
@@ -84,9 +84,9 @@ Before deploying, you need to change the values in `config.json` file. The varia
 }
 ```
 
-After you change the values in `config.json`, you can deploy the package with `ocihpc deploy <package name>`. This command will create a Stack on Oracle Cloud Resource Manager and deploy the package using it.
+After you change the values in `config.json`, you can deploy the stack with `ocihpc deploy <stack name>`. This command will create a Stack on Oracle Cloud Resource Manager and deploy the stack using it.
 
-For supported packages, you can set the number of nodes you want to deploy by adding it to the `ocihpc deploy` command. If the package does not support it or if you don't provide a value, the tool will deploy with the default numbers. 
+For supported stacks, you can set the number of nodes you want to deploy by adding it to the `ocihpc deploy` command. If the stack does not support it or if you don't provide a value, the tool will deploy with the default numbers. 
 
 For example, the following command will deploy a Cluster Network with 5 nodes:
 
@@ -94,7 +94,7 @@ For example, the following command will deploy a Cluster Network with 5 nodes:
 $ ocihpc deploy ClusterNetwork 5
 ```
 
-INFO: The tool will generate a deployment name that consists of `<package name>-<current directory>-<random-number>`.
+INFO: The tool will generate a deployment name that consists of `<stack name>-<current directory>-<random-number>`.
 
 Example:
 
@@ -109,7 +109,7 @@ Deploying ClusterNetwork-ocihpc-test-7355 [0min 35sec]
 ...
 ```
 
-TIP: When running the `ocihpc deploy <package name>` command, your shell might autocomplete it to the name of the zip file in the folder. This is fine. The tool will correct it, you don't need to delete the .zip extension from the command.
+TIP: When running the `ocihpc deploy <stack name>` command, your shell might autocomplete it to the name of the zip file in the folder. This is fine. The tool will correct it, you don't need to delete the .zip extension from the command.
 
 For example, `ocihpc deploy ClusterNetwork` and `ocihpc deploy ClusterNetwork.zip` are both valid commands.
 
@@ -126,7 +126,7 @@ You can also find the IP address of the bastion/headnode in ClusterNetwork-ocihp
 ```
 
 ### 5 - Delete
-When you are done with your deployment, you can delete it by changing to the package folder and running `ocihpc delete <package name>`.
+When you are done with your deployment, you can delete it by changing to the stack folder and running `ocihpc delete <stack name>`.
 
 Example:
 ```
