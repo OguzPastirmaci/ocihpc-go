@@ -18,7 +18,7 @@ Example command: ocihpc get ip
 	Run: func(cmd *cobra.Command, args []string) {
 
 		stackIP := getStackIP()
-		stackName := getStackName()
+		stackName := getSourceStackName()
 		fmt.Printf("\nYou can connect to your bastion/headnode using the following command:\n\n")
 		fmt.Printf("ssh %s@%s -i <location of the private key>\n\n", stackUser[stackName], stackIP)
 

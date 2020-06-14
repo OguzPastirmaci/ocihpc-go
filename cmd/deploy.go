@@ -11,6 +11,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
 	"strconv"
 	"time"
 
@@ -22,10 +23,11 @@ import (
 )
 
 type Stack struct {
-	StackName string `json:"stackName,omitempty"`
-	StackID   string `json:"stackID,omitempty"`
-	StackIP   string `json:"stackIP,omitempty"`
-	JobID     string `json:"jobID,omitempty"`
+	sourceStackName   string `json:"sourceStackName,omitempty"`
+	deployedStackName string `json:"deployedStackName,omitempty"`
+	StackID           string `json:"stackID,omitempty"`
+	StackIP           string `json:"stackIP,omitempty"`
+	JobID             string `json:"jobID,omitempty"`
 }
 
 var s Stack
@@ -40,7 +42,7 @@ Example command: ocihpc deploy --stack ClusterNetwork --node-count 2 --region us
 
 	Run: func(cmd *cobra.Command, args []string) {
 		stack, _ := cmd.Flags().GetString("stack")
-		s.StackName = stack
+		s.sourceStackName = stack
 		region, _ := cmd.Flags().GetString("region")
 		compartmentID, _ := cmd.Flags().GetString("compartment-id")
 		nodeCount, _ := cmd.Flags().GetString("node-count")
@@ -82,7 +84,8 @@ func init() {
 }
 
 func createStack(ctx context.Context, provider common.ConfigurationProvider, client resourcemanager.ResourceManagerClient, compartment string, region string, stack string, nodeCount string) string {
-	stackName := fmt.Sprintf("%s-%s", stack, helpers.GetRandomString(4))
+	dir := filepath.Base(getWd())
+	s.deployedStackName = fmt.Sprintf("%s-%s-%s", stack, dir, getRandomNumber(4))
 	tenancyID, _ := provider.TenancyOCID()
 
 	// Base64 the zip file.
@@ -132,10 +135,10 @@ func createStack(ctx context.Context, provider common.ConfigurationProvider, cli
 			ConfigSource: resourcemanager.CreateZipUploadConfigSourceDetails{
 				ZipFileBase64Encoded: common.String(encoded),
 			},
-			DisplayName:      common.String(stackName),
-			Description:      common.String(fmt.Sprintf("%s - Created by ocihpc", stack)),
+			DisplayName:      common.String(s.deployedStackName),
+			Description:      common.String(fmt.Sprintf("Deployed with ocihpc")),
 			Variables:        config,
-			TerraformVersion: common.String("0.12.x"),
+			TerraformVersion: common.String(stackVersion[stack]),
 		},
 	}
 
@@ -186,11 +189,11 @@ func createApplyJob(ctx context.Context, provider common.ConfigurationProvider, 
 			os.Exit(1)
 		}
 
-		fmt.Printf("Deploying stack: %s [%dmin %dsec]\n", stack, elapsed/60, elapsed%60)
+		fmt.Printf("Deploying stack: %s [%dmin %dsec]\n", s.deployedStackName, elapsed/60, elapsed%60)
 		time.Sleep(10 * time.Second)
 
 		if readResp.LifecycleState == "SUCCEEDED" {
-			fmt.Printf("\nDeployment of %s completed successfully\n", stack)
+			fmt.Printf("\nDeployment of %s completed successfully\n", s.deployedStackName)
 
 			tfStateReq := resourcemanager.GetJobTfStateRequest{
 				JobId: applyJobResp.Id,
@@ -204,8 +207,9 @@ func createApplyJob(ctx context.Context, provider common.ConfigurationProvider, 
 			fmt.Printf("\nYou can connect to your bastion/headnode using the command: ssh opc@%s -i <location of the private key>\n\n", s.StackIP)
 			break
 		} else if readResp.LifecycleState == "FAILED" {
-			fmt.Printf("\nDeployment failed. You can run 'ocihpc get logs' to get the logs of the failed job\n")
-			fmt.Printf("\nPlease note that there might be some resources that are already created. Run 'ocihpc delete %s' to delete those resources.", stack)
+			fmt.Printf("\nDeployment failed. Please note that there might be some resources that are already created. Run 'ocihpc delete %s' to delete those resources.\n", stack)
+			fmt.Printf("\nShowing error(s) below. If you want to get all the logs, run 'ocihpc get logs'.\n")
+			getTFErrorLogs(ctx, provider, client, *applyJobResp.Id)
 			break
 		}
 	}

@@ -88,7 +88,7 @@ func createDestroyJob(ctx context.Context, provider common.ConfigurationProvider
 			os.Exit(1)
 		}
 
-		fmt.Printf("Deleting stack: %s [%dmin %dsec]\n", stack, elapsed/60, elapsed%60)
+		fmt.Printf("Deleting stack: %s [%dmin %dsec]\n", s.deployedStackName, elapsed/60, elapsed%60)
 		time.Sleep(15 * time.Second)
 		if readResp.LifecycleState == "SUCCEEDED" {
 			deleteStack(ctx, stackID, client, stack)

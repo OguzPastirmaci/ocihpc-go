@@ -1,6 +1,4 @@
 {
- "stackName": "ClusterNetwork",
- "stackID": "ocid1.ormstack.oc1.iad.aaaaaaaab43f7mbo6t5ya4k5qge4yzp53qp242wsfodfg6s5zmspnpig6jlq",
- "stackIP": "150.136.89.48",
- "jobID": "ocid1.ormjob.oc1.iad.aaaaaaaa32i2jroclk2oanbcdjfijpaau7nh3syfkanidsuj566g3rzb6taq"
+ "stackID": "ocid1.ormstack.oc1.iad.aaaaaaaad5hyn23ya3lijjdjd5mwjidnbs5vvsnwtiutie7hiif3rjiblina",
+ "jobID": "ocid1.ormjob.oc1.iad.aaaaaaaa3vhxaic6jp7oeesttnsebvtenok3di4a242pb66v7blzrcmhxdnq"
 }

@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"io"
 	"io/ioutil"
+	"math/rand"
 	"net/http"
 	"os"
 
@@ -21,7 +22,7 @@ func addStackInfo(s Stack) {
 	_ = ioutil.WriteFile(filename, file, 0644)
 }
 
-func getStackName() string {
+func getSourceStackName() string {
 
 	content, err := ioutil.ReadFile(filename)
 	helpers.FatalIfError(err)
@@ -29,7 +30,18 @@ func getStackName() string {
 	var info Stack
 	json.Unmarshal([]byte(content), &info)
 
-	return info.StackName
+	return info.sourceStackName
+}
+
+func getDeployedStackName() string {
+
+	content, err := ioutil.ReadFile(filename)
+	helpers.FatalIfError(err)
+
+	var info Stack
+	json.Unmarshal([]byte(content), &info)
+
+	return info.deployedStackName
 }
 
 func getStackID() string {
@@ -86,4 +98,14 @@ func downloadFile(filepath string, url string) error {
 
 	_, err = io.Copy(out, resp.Body)
 	return err
+}
+
+func getRandomNumber(n int) string {
+	numbers := []rune("0123456789")
+
+	b := make([]rune, n)
+	for i := range b {
+		b[i] = numbers[rand.Intn(len(numbers))]
+	}
+	return string(b)
 }

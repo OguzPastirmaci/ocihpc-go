@@ -6,6 +6,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"regexp"
 	"time"
 
 	"github.com/oracle/oci-go-sdk/common"
@@ -54,5 +55,27 @@ func getTFLogs(ctx context.Context, provider common.ConfigurationProvider, clien
 	helpers.FatalIfError(err)
 
 	return string(logs), err
+
+}
+
+func getTFErrorLogs(ctx context.Context, provider common.ConfigurationProvider, client resourcemanager.ResourceManagerClient, jobID string) {
+
+	tf := resourcemanager.GetJobLogsRequest{
+		JobId:                         &jobID,
+		TimestampGreaterThanOrEqualTo: &common.SDKTime{time.Now().Add(time.Second * -300)},
+		SortOrder:                     "ASC",
+	}
+
+	resp, err := client.GetJobLogs(ctx, tf)
+	helpers.FatalIfError(err)
+
+	logs, err := json.MarshalIndent(resp.Items, "", "    ")
+	helpers.FatalIfError(err)
+
+	regex := regexp.MustCompile(`(?m)Error.*$`)
+	matches := regex.FindAllString(string(logs), -1)
+	for i, v := range matches {
+		fmt.Printf("\nError %d: '%s'\n", i+1, v)
+	}
 
 }
