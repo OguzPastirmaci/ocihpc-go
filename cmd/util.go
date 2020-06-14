@@ -4,6 +4,7 @@ package cmd
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"math/rand"
@@ -108,4 +109,13 @@ func getRandomNumber(n int) string {
 		b[i] = numbers[rand.Intn(len(numbers))]
 	}
 	return string(b)
+}
+
+func getOutputQuery(data string, query string) string {
+
+	var p map[string]interface{}
+	json.Unmarshal([]byte(data), &p)
+	q := p["outputs"].(map[string]interface{})[query].(map[string]interface{})["value"]
+	str := fmt.Sprint(q)
+	return str
 }

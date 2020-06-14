@@ -15,7 +15,6 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/jeffail/gabs"
 	"github.com/oracle/oci-go-sdk/common"
 	"github.com/oracle/oci-go-sdk/example/helpers"
 	"github.com/oracle/oci-go-sdk/resourcemanager"
@@ -200,15 +199,14 @@ func createApplyJob(ctx context.Context, provider common.ConfigurationProvider, 
 			}
 			tfStateResp, _ := client.GetJobTfState(ctx, tfStateReq)
 			body, _ := ioutil.ReadAll(tfStateResp.Content)
-			tfStateParsed, err := gabs.ParseJSON([]byte(string(body)))
 			helpers.FatalIfError(err)
 
-			s.StackIP = tfStateParsed.Path(outputQuery[stack]).Data().(string)
+			s.StackIP = getOutputQuery(string(body), outputQuery[stack])
 			fmt.Printf("\nYou can connect to your bastion/headnode using the command: ssh opc@%s -i <location of the private key>\n\n", s.StackIP)
 			break
 		} else if readResp.LifecycleState == "FAILED" {
 			fmt.Printf("\nDeployment failed. Please note that there might be some resources that are already created. Run 'ocihpc delete %s' to delete those resources.\n", stack)
-			fmt.Printf("\nShowing error(s) below. If you want to get all the logs, run 'ocihpc get logs'.\n")
+			fmt.Printf("\nShowing error(s) below. If you want to get all the logs, you can run 'ocihpc get logs'.\n")
 			getTFErrorLogs(ctx, provider, client, *applyJobResp.Id)
 			break
 		}

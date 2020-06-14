@@ -3,12 +3,13 @@
 package cmd
 
 var outputQuery = map[string]string{
-	"ClusterNetwork": "outputs.bastion.value",
-	"vcn":            "outputs.vcn_id.value",
+	"ClusterNetwork": "bastion",
+	"vcn":            "vcn_id",
 }
 
 var stackUser = map[string]string{
 	"ClusterNetwork": "opc",
+	"vcn":            "opc",
 }
 
 var stackVersion = map[string]string{
