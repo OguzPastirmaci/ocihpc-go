@@ -200,8 +200,8 @@ func createApplyJob(ctx context.Context, provider common.ConfigurationProvider, 
 			tfStateResp, _ := client.GetJobTfState(ctx, tfStateReq)
 			body, _ := ioutil.ReadAll(tfStateResp.Content)
 			helpers.FatalIfError(err)
-
 			s.StackIP = getOutputQuery(string(body), outputQuery[stack])
+
 			fmt.Printf("\nYou can connect to your bastion/headnode using the command: ssh opc@%s -i <location of the private key>\n\n", s.StackIP)
 			break
 		} else if readResp.LifecycleState == "FAILED" {

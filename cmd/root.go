@@ -25,7 +25,7 @@ of any size with our dedicated bare metal HPC compute instances and Mellanox RDM
 
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
+		//fmt.Println(err)
 		os.Exit(1)
 	}
 }

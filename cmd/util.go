@@ -19,7 +19,6 @@ var filename = ".stackinfo.json"
 func addStackInfo(s Stack) {
 
 	file, _ := json.MarshalIndent(s, "", " ")
-
 	_ = ioutil.WriteFile(filename, file, 0644)
 }
 

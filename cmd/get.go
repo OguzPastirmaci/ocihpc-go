@@ -26,5 +26,5 @@ func init() {
 }
 
 func requireSubcommand(cmd *cobra.Command, args []string) error {
-	return fmt.Errorf("%s requires a subcommand after it.", cmd.Name())
+	return fmt.Errorf("ocihpc %s requires a subcommand after it.", cmd.Name())
 }
