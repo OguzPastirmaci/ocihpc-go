@@ -1,4 +1,4 @@
-# OCI Easy HPC deployment tool - ocihpc
+# ocihpc - Oracle Cloud Infrastructure Easy HPC deployment tool
 
 `ocihpc` is a tool for simplifying deployments of HPC applications in Oracle Cloud Infrastructure (OCI).
 
@@ -58,7 +58,7 @@ ocihpc version
 curl -LO 
 ```
 
-2. Add the ocihpc binary in to your PATH.
+2. Add the ocihpc binary to your PATH.
 
 3. Test that it works.
 ```sh
@@ -70,7 +70,11 @@ ocihpc version
 
 ## Using ocihpc
 
-### 1 - List
+### 1 - Configure
+Run `ocihpc configure` to check if you have a valid configuration to access OCI. The tool will walk you through creating a configuration. 
+
+
+### 2 - List
 You can get the list of available stacks by running `ocihpc list`.
 
 Example:
@@ -85,7 +89,7 @@ Gromacs
 OpenFOAM
 ```
 
-### 2 - Initialize
+### 3 - Initialize
 Create a folder that you will use as the deployment source.
 
 IMPORTANT: Use a different folder per stack. Do not initialize more than one stack in the same folder. Otherwise, the tool will overwrite the previous one.
@@ -98,14 +102,14 @@ $ mkdir ocihpc-test
 $ cd ocihpc-test
 $ ocihpc init ClusterNetwork
 
-Downlading stack: ClusterNetwork
+Downloading stack: ClusterNetwork
 
-stack ClusterNetwork downloaded to /Users/opastirm/ocihpc-test/
+ClusterNetwork downloaded to /Users/opastirm/ocihpc-test/
 
 IMPORTANT: Edit the contents of the /Users/opastirm/ocihpc-test/config.json file before running ocihpc deploy command
 ```
 
-### 3 - Deploy
+### 4 - Deploy
 Before deploying, you need to change the values in `config.json` file. The variables depend on the stack you deploy. An example `config.json` for Cluster Network would look like this:
 
 ```json
@@ -150,7 +154,7 @@ TIP: When running the `ocihpc deploy <stack name>` command, your shell might aut
 For example, `ocihpc deploy ClusterNetwork` and `ocihpc deploy ClusterNetwork.zip` are both valid commands.
 
 
-### 4 - Connect
+### 5 - Connect
 When deployment is completed, you will see the the bastion/headnode IP that you can connect to:
 
 ```
@@ -158,6 +162,8 @@ Successfully deployed ClusterNetwork-ocihpc-test-7355
 
 You can connect to your head node using the command: ssh opc@$123.221.10.8 -i <location of the private key you used>
 ```
+
+You can also get the connection details by running `ocihpc get ip` command.
 
 ### 5 - Delete
 When you are done with your deployment, you can delete it by changing to the stack folder and running `ocihpc delete --stack <stack name>`.
