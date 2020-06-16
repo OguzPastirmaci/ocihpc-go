@@ -58,7 +58,7 @@ ocihpc version
 curl -LO 
 ```
 
-2. Add the ocihpc binary in to your PATH.
+2. Add the ocihpc binary to your PATH.
 
 3. Test that it works.
 ```sh
