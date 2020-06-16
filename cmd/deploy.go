@@ -88,7 +88,9 @@ func createStack(ctx context.Context, provider common.ConfigurationProvider, cli
 	tenancyID, _ := provider.TenancyOCID()
 
 	// Base64 the zip file.
-	zipFilePath := getWd() + "/" + stack + ".zip"
+	zipfile := stack + ".zip"
+	zipFilePath := filepath.Join(getWd(), zipfile)
+
 	f, _ := os.Open(zipFilePath)
 	reader := bufio.NewReader(f)
 	content, _ := ioutil.ReadAll(reader)
@@ -205,7 +207,7 @@ func createApplyJob(ctx context.Context, provider common.ConfigurationProvider, 
 			fmt.Printf("\nYou can connect to your bastion/headnode using the command: ssh opc@%s -i <location of the private key>\n\n", s.StackIP)
 			break
 		} else if readResp.LifecycleState == "FAILED" {
-			fmt.Printf("\nDeployment failed. Please note that there might be some resources that are already created. Run 'ocihpc delete %s' to delete those resources.\n", stack)
+			fmt.Printf("\nDeployment failed. Please note that there might be some resources that are already created. Run 'ocihpc delete --stack %s' to delete those resources.\n", stack)
 			fmt.Printf("\nShowing error(s) below. If you want to get all the logs, you can run 'ocihpc get logs'.\n")
 			getTFErrorLogs(ctx, provider, client, *applyJobResp.Id)
 			break

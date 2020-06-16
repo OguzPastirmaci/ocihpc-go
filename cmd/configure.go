@@ -11,6 +11,7 @@ import (
 	"encoding/pem"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 
 	homedir "github.com/mitchellh/go-homedir"
@@ -30,7 +31,7 @@ Example command: ocihpc configure
 		home, err := homedir.Dir()
 		helpers.FatalIfError(err)
 
-		configfile := home + "/.oci/config"
+		configfile := filepath.Join(home, ".oci", "config")
 
 		provider := common.DefaultConfigProvider()
 
@@ -61,8 +62,13 @@ func createNewConfig(configfile string) {
 	var region string
 	var fingerprint string
 
-	privateFileName := home + "/.oci/ocihpc_key.pem"
-	publicFileName := home + "/.oci/ocihpc_key_public.pem"
+	privateFileName := filepath.Join(home, ".oci", "ocihpc_key.pem")
+	publicFileName := filepath.Join(home, ".oci", "ocihpc_key_public.pem")
+	path := filepath.Join(home, ".oci")
+
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		os.MkdirAll(path, os.ModePerm)
+	}
 
 	file, err := os.OpenFile(configfile, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0600)
 	helpers.FatalIfError(err)

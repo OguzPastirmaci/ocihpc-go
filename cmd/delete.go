@@ -93,7 +93,7 @@ func createDestroyJob(ctx context.Context, provider common.ConfigurationProvider
 		if readResp.LifecycleState == "SUCCEEDED" {
 			deleteStack(ctx, stackID, client, stack)
 			fmt.Printf("\nDelete completed successfully\n")
-			os.Remove("stack.info")
+			os.Remove(".stackinfo.json")
 			break
 		} else if readResp.LifecycleState == "FAILED" {
 			fmt.Printf("\nDeployment failed. You can run 'ocihpc get logs' to get the logs of the failed job\n")

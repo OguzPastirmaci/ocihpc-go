@@ -4,6 +4,7 @@ package cmd
 
 import (
 	"fmt"
+	"path/filepath"
 
 	"github.com/oracle/oci-go-sdk/example/helpers"
 	"github.com/spf13/cobra"
@@ -34,8 +35,10 @@ func stackInit(stack string) {
 	configURL := fmt.Sprintf("https://raw.githubusercontent.com/oracle-quickstart/oci-ocihpc/master/packages/%s/config.json", stack)
 	zipURL := fmt.Sprintf("https://github.com/oracle-quickstart/oci-ocihpc/raw/master/packages/%s/%s.zip", stack, stack)
 
-	configFilePath := getWd() + "/config.json"
-	zipFilePath := getWd() + "/" + stack + ".zip"
+	configFilePath := filepath.Join(getWd(), "config.json")
+
+	zipfile := stack + ".zip"
+	zipFilePath := filepath.Join(getWd(), zipfile)
 
 	errConfig := downloadFile(configFilePath, configURL)
 	helpers.FatalIfError(errConfig)
