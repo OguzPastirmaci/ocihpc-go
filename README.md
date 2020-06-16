@@ -5,7 +5,8 @@
 ## Prerequisites
 The OCI user account you use in `ocihpc` should have the necessary policies configured for OCI Resource Manager. Please check [this link](https://docs.cloud.oracle.com/en-us/iaas/Content/Identity/Tasks/managingstacksandjobs.htm) for information on required policies.
 
-### Install ocihpc on Linux
+## Installing ocihpc
+### Installing ocihpc on Linux
 
 1. Download the latest release with the following command:
 ```sh
@@ -26,6 +27,46 @@ sudo mv ./ocihpc /usr/local/bin/ocihpc
 ```sh
 ocihpc version 
 ```
+
+### Installing ocihpc on macOS
+
+1. Download the latest release with the following command:
+```sh
+curl -LO 
+```
+
+2. Make the ocihpc binary executable.
+```sh
+chmod +x ./ocihpc 
+```
+
+3. Move the ocihpc binary to your PATH.
+```sh
+sudo mv ./ocihpc /usr/local/bin/ocihpc 
+```
+
+4. Test that it works.
+```sh
+ocihpc version 
+```
+
+### Installing ocihpc on Windows
+
+
+1. Download the latest release with the following command:
+```sh
+curl -LO 
+```
+
+2. Add the ocihpc binary in to your PATH.
+
+3. Test that it works.
+```sh
+ocihpc version 
+```
+
+
+
 
 ## Using ocihpc
 
