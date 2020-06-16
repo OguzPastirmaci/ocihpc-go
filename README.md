@@ -3,33 +3,28 @@
 `ocihpc` is a tool for simplifying deployments of HPC applications in Oracle Cloud Infrastructure (OCI).
 
 ## Prerequisites
+The OCI user account you use in `ocihpc` should have the necessary policies configured for OCI Resource Manager. Please check [this link](https://docs.cloud.oracle.com/en-us/iaas/Content/Identity/Tasks/managingstacksandjobs.htm) for information on required policies.
 
-### Software needed
-The tool needs `oci` CLI, `unzip`, and `jq` to run. You will receive an error message if they are not installed.
+### Install ocihpc on Linux
 
-To install and configure OCI CLI, please follow the steps in [this link](https://docs.cloud.oracle.com/en-us/iaas/Content/API/SDKDocs/cliinstall.htm).
-
-The OCI user account you use in OCI CLI should have the necessary policies configured for OCI Resource Manager. Please check [this link](https://docs.cloud.oracle.com/en-us/iaas/Content/Identity/Tasks/managingstacksandjobs.htm) for information on required policies.
-
-`Unzip` and `jq` come installed in many linux distributions. If you need to install them, please check the tools' websites for installation.
-
-### PATH settings
-You need to set the `ocihpc` tool as an executable and add the tool directory to your path.
-
-Clone the repository:
+1. Download the latest release with the following command:
 ```sh
-$ git clone https://github.com/oracle-quickstart/oci-ocihpc.git
+curl -LO 
 ```
 
-Set the tool as an executable:
-```
-$ cd oci-ocihpc
-$ chmod +x ocihpc
-```
-
-Add the tool directory to your path:
+2. Make the ocihpc binary executable.
 ```sh
-$ export PATH=$PATH:<the path where you cloned the repository into>
+chmod +x ./ocihpc 
+```
+
+3. Move the ocihpc binary to your PATH.
+```sh
+sudo mv ./ocihpc /usr/local/bin/ocihpc 
+```
+
+4. Test that it works.
+```sh
+ocihpc version 
 ```
 
 ## Using ocihpc
