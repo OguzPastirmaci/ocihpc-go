@@ -37,7 +37,7 @@ Example command: ocihpc configure
 
 		if _, err := os.Stat(configfile); err == nil {
 			if ok, _ := common.IsConfigurationProviderValid(provider); ok {
-				fmt.Printf("\nExisting configuration is valid. Exiting configuration.\n\n")
+				fmt.Printf("\nExisting configuration is valid. Please edit %s if you want to make changes to the configuration.\n\n", configfile)
 			}
 		} else {
 			fmt.Printf("\nCould not find a valid configuration file. Please answer the following questions to create one:\n")

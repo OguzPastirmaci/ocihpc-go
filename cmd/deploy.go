@@ -42,9 +42,14 @@ Example command: ocihpc deploy --stack ClusterNetwork --node-count 2 --region us
 	Run: func(cmd *cobra.Command, args []string) {
 		stack, _ := cmd.Flags().GetString("stack")
 		s.sourceStackName = stack
+		addStackInfo(s)
 		region, _ := cmd.Flags().GetString("region")
 		compartmentID, _ := cmd.Flags().GetString("compartment-id")
 		nodeCount, _ := cmd.Flags().GetString("node-count")
+
+		if len(getStackID()) > 0 {
+			getConfirmation("There is an existing stack in the current folder. Do you want to deploy a new stack and overwrite the existing one?", 5)
+		}
 
 		if len(nodeCount) > 0 {
 			if _, err := strconv.Atoi(nodeCount); err != nil {
@@ -74,7 +79,7 @@ func init() {
 	deployCmd.Flags().StringP("compartment-id", "c", "", "Unique identifier (OCID) of the compartment that the stack will be deployed in.")
 	deployCmd.MarkFlagRequired("compartment-id")
 
-	deployCmd.Flags().StringP("region", "r", "", "The region to deploy to")
+	deployCmd.Flags().StringP("region", "r", "", "The region to deploy to.")
 
 	deployCmd.Flags().StringP("stack", "s", "", "Name of the stack you want to deploy.")
 	deployCmd.MarkFlagRequired("stack")
@@ -85,6 +90,7 @@ func init() {
 func createStack(ctx context.Context, provider common.ConfigurationProvider, client resourcemanager.ResourceManagerClient, compartment string, region string, stack string, nodeCount string) string {
 	dir := filepath.Base(getWd())
 	s.deployedStackName = fmt.Sprintf("%s-%s-%s", stack, dir, getRandomNumber(4))
+	addStackInfo(s)
 	tenancyID, _ := provider.TenancyOCID()
 
 	// Base64 the zip file.

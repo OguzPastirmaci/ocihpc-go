@@ -43,9 +43,8 @@ func init() {
 func getTFLogs(ctx context.Context, provider common.ConfigurationProvider, client resourcemanager.ResourceManagerClient, jobID string) (string, error) {
 
 	tf := resourcemanager.GetJobLogsRequest{
-		JobId:                         &jobID,
-		TimestampGreaterThanOrEqualTo: &common.SDKTime{time.Now().Add(time.Second * -300)},
-		SortOrder:                     "ASC",
+		JobId:     &jobID,
+		SortOrder: "ASC",
 	}
 
 	resp, err := client.GetJobLogs(ctx, tf)

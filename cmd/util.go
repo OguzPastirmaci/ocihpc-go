@@ -3,13 +3,16 @@
 package cmd
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"math/rand"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/oracle/oci-go-sdk/example/helpers"
 )
@@ -117,4 +120,25 @@ func getOutputQuery(data string, query string) string {
 	q := p["outputs"].(map[string]interface{})[query].(map[string]interface{})["value"]
 	str := fmt.Sprint(q)
 	return str
+}
+
+func getConfirmation(prompt string, times int) bool {
+	r := bufio.NewReader(os.Stdin)
+
+	for ; times > 0; times-- {
+		fmt.Printf("%s [y/n]: ", prompt)
+
+		res, err := r.ReadString('\n')
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		if len(res) < 2 {
+			continue
+		}
+
+		return strings.ToLower(strings.TrimSpace(res))[0] == 'y'
+	}
+
+	return false
 }
