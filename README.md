@@ -98,9 +98,9 @@ $ mkdir ocihpc-test
 $ cd ocihpc-test
 $ ocihpc init ClusterNetwork
 
-Downlading stack: ClusterNetwork
+Downloading stack: ClusterNetwork
 
-stack ClusterNetwork downloaded to /Users/opastirm/ocihpc-test/
+ClusterNetwork downloaded to /Users/opastirm/ocihpc-test/
 
 IMPORTANT: Edit the contents of the /Users/opastirm/ocihpc-test/config.json file before running ocihpc deploy command
 ```
