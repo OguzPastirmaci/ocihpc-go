@@ -34,12 +34,13 @@ Example command: ocihpc configure
 
 		provider := common.DefaultConfigProvider()
 
-		if ok, _ := common.IsConfigurationProviderValid(provider); !ok {
-			//fmt.Errorf("Did not find a valid configuration file. Answer the following questions to create one:", err)
-			fmt.Printf("\nDid not find a valid configuration file. Answer the following questions to create one:\n\n")
-			createNewConfig(configfile)
+		if _, err := os.Stat(configfile); err == nil {
+			if ok, _ := common.IsConfigurationProviderValid(provider); ok {
+				fmt.Printf("\nExisting configuration is valid. Exiting configuration.\n\n")
+			}
 		} else {
-			fmt.Printf("\nFound existing valid configuration. Exiting configuration.\n\n")
+			fmt.Printf("\nCould not find a valid configuration file. Please answer the following questions to create one:\n")
+			createNewConfig(configfile)
 		}
 
 	},
@@ -68,35 +69,24 @@ func createNewConfig(configfile string) {
 
 	defer file.Close()
 
-	fmt.Printf(`The following links explain where to find the information required by this steps:
-
-	User API Signing Key, OCID and Tenancy OCID:
-	
-    https://docs.cloud.oracle.com/Content/API/Concepts/apisigningkey.htm#Other
-	
-	Region:
-    
-    https://docs.cloud.oracle.com/Content/General/Concepts/regions.htm
-	
-	General config documentation:
-    
-    https://docs.cloud.oracle.com/Content/API/Concepts/sdkconfig.htm
-    
-`)
-
-	fmt.Printf("\nEnter a user OCID: ")
+	fmt.Printf("\nEnter your user OCID: ")
 	fmt.Scanln(&user)
 
-	fmt.Printf("\nEnter a tenancy OCID: ")
+	fmt.Printf("\nEnter your tenancy OCID: ")
 	fmt.Scanln(&tenancy)
 
-	fmt.Printf("\nEnter a region: ")
+	fmt.Printf("\nEnter your region: ")
 	fmt.Scanln(&region)
 
 	fingerprint = createKeys(privateFileName, publicFileName)
 
 	content := fmt.Sprintf("[DEFAULT]\nuser=%s\nfingerprint=%s\nkey_file=%s\ntenancy=%s\nregion=%s", user, fingerprint, privateFileName, tenancy, region)
 	_, err = file.WriteString(content)
+
+	fmt.Printf("\nConfiguration file saved to: %s\n", configfile)
+	fmt.Printf("\nDon't forget to upload your public key (%s).\n", publicFileName)
+	fmt.Printf("\nYou can find the instructions for uploading the public key in this link: https://docs.cloud.oracle.com/en-us/iaas/Content/API/Concepts/apisigningkey.htm#three\n\n")
+
 }
 
 func createKeys(privateFileName string, publicFileName string) string {
@@ -144,6 +134,7 @@ func createKeys(privateFileName string, publicFileName string) string {
 	}
 
 	fingerprint := strings.Join(fp, ":")
+
 	return fingerprint
 
 }
