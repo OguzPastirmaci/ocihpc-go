@@ -3,7 +3,6 @@
 package cmd
 
 import (
-	"bufio"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -33,7 +32,7 @@ func getSourceStackName() string {
 	var info Stack
 	json.Unmarshal([]byte(content), &info)
 
-	return info.sourceStackName
+	return info.SourceStackName
 }
 
 func getDeployedStackName() string {
@@ -44,7 +43,7 @@ func getDeployedStackName() string {
 	var info Stack
 	json.Unmarshal([]byte(content), &info)
 
-	return info.deployedStackName
+	return info.DeployedStackName
 }
 
 func getStackID() string {
@@ -122,23 +121,22 @@ func getOutputQuery(data string, query string) string {
 	return str
 }
 
-func getConfirmation(prompt string, times int) bool {
-	r := bufio.NewReader(os.Stdin)
+func getConfirmation(prompt string) bool {
+	var response string
 
-	for ; times > 0; times-- {
-		fmt.Printf("%s [y/n]: ", prompt)
-
-		res, err := r.ReadString('\n')
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		if len(res) < 2 {
-			continue
-		}
-
-		return strings.ToLower(strings.TrimSpace(res))[0] == 'y'
+	fmt.Printf("\n%s (y/n): ", prompt)
+	_, err := fmt.Scanln(&response)
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	return false
+	switch strings.ToLower(response) {
+	case "y", "yes":
+		return true
+	case "n", "no":
+		return false
+	default:
+		fmt.Println(prompt)
+		return getConfirmation(prompt)
+	}
 }

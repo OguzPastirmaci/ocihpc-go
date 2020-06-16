@@ -22,8 +22,8 @@ import (
 )
 
 type Stack struct {
-	sourceStackName   string `json:"sourceStackName,omitempty"`
-	deployedStackName string `json:"deployedStackName,omitempty"`
+	SourceStackName   string `json:"sourceStackName,omitempty"`
+	DeployedStackName string `json:"deployedStackName,omitempty"`
 	StackID           string `json:"stackID,omitempty"`
 	StackIP           string `json:"stackIP,omitempty"`
 	JobID             string `json:"jobID,omitempty"`
@@ -41,15 +41,22 @@ Example command: ocihpc deploy --stack ClusterNetwork --node-count 2 --region us
 
 	Run: func(cmd *cobra.Command, args []string) {
 		stack, _ := cmd.Flags().GetString("stack")
-		s.sourceStackName = stack
+		s.SourceStackName = stack
+
+		if _, err := os.Stat(".stackinfo.json"); err == nil {
+			existingStackID := getStackID()
+			if len(existingStackID) > 0 {
+				isConfirmed := getConfirmation("\nThere is an existing stack in the current folder. If you deploy a new stack, you will have to delete related resources manually.\n\nDo you want to deploy a new stack and overwrite the existing one?")
+				if !isConfirmed {
+					os.Exit(1)
+				}
+			}
+		}
+
 		addStackInfo(s)
 		region, _ := cmd.Flags().GetString("region")
 		compartmentID, _ := cmd.Flags().GetString("compartment-id")
 		nodeCount, _ := cmd.Flags().GetString("node-count")
-
-		if len(getStackID()) > 0 {
-			getConfirmation("There is an existing stack in the current folder. Do you want to deploy a new stack and overwrite the existing one?", 5)
-		}
 
 		if len(nodeCount) > 0 {
 			if _, err := strconv.Atoi(nodeCount); err != nil {
@@ -84,12 +91,12 @@ func init() {
 	deployCmd.Flags().StringP("stack", "s", "", "Name of the stack you want to deploy.")
 	deployCmd.MarkFlagRequired("stack")
 
-	deployCmd.Flags().StringP("node-count", "n", "", "Number of nodes to deploy.")
+	deployCmd.Flags().StringP("node-count", "n", defaultNodeCount[s.SourceStackName], "Number of nodes to deploy.")
 }
 
 func createStack(ctx context.Context, provider common.ConfigurationProvider, client resourcemanager.ResourceManagerClient, compartment string, region string, stack string, nodeCount string) string {
 	dir := filepath.Base(getWd())
-	s.deployedStackName = fmt.Sprintf("%s-%s-%s", stack, dir, getRandomNumber(4))
+	s.DeployedStackName = fmt.Sprintf("%s-%s-%s", stack, dir, getRandomNumber(4))
 	addStackInfo(s)
 	tenancyID, _ := provider.TenancyOCID()
 
@@ -142,7 +149,7 @@ func createStack(ctx context.Context, provider common.ConfigurationProvider, cli
 			ConfigSource: resourcemanager.CreateZipUploadConfigSourceDetails{
 				ZipFileBase64Encoded: common.String(encoded),
 			},
-			DisplayName:      common.String(s.deployedStackName),
+			DisplayName:      common.String(s.DeployedStackName),
 			Description:      common.String(fmt.Sprintf("Deployed with ocihpc")),
 			Variables:        config,
 			TerraformVersion: common.String(stackVersion[stack]),
@@ -196,11 +203,11 @@ func createApplyJob(ctx context.Context, provider common.ConfigurationProvider, 
 			os.Exit(1)
 		}
 
-		fmt.Printf("Deploying stack: %s [%dmin %dsec]\n", s.deployedStackName, elapsed/60, elapsed%60)
-		time.Sleep(10 * time.Second)
+		fmt.Printf("Deploying stack: %s [%dmin %dsec]\n", s.DeployedStackName, elapsed/60, elapsed%60)
+		time.Sleep(15 * time.Second)
 
 		if readResp.LifecycleState == "SUCCEEDED" {
-			fmt.Printf("\nDeployment of %s completed successfully\n", s.deployedStackName)
+			fmt.Printf("\nDeployment of %s completed successfully\n", s.DeployedStackName)
 
 			tfStateReq := resourcemanager.GetJobTfStateRequest{
 				JobId: applyJobResp.Id,

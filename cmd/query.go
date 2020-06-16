@@ -13,3 +13,7 @@ var stackUser = map[string]string{
 var stackVersion = map[string]string{
 	"ClusterNetwork": "0.12.x",
 }
+
+var defaultNodeCount = map[string]string{
+	"ClusterNetwork": "2",
+}

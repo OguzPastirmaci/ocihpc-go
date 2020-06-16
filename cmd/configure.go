@@ -90,7 +90,7 @@ func createNewConfig(configfile string) {
 	_, err = file.WriteString(content)
 
 	fmt.Printf("\nConfiguration file saved to: %s\n", configfile)
-	fmt.Printf("\nDon't forget to upload your public key (%s).\n", publicFileName)
+	fmt.Printf("\nIMPORTANT: Don't forget to upload your public key (%s).\n", publicFileName)
 	fmt.Printf("\nYou can find the instructions for uploading the public key in this link: https://docs.cloud.oracle.com/en-us/iaas/Content/API/Concepts/apisigningkey.htm#three\n\n")
 
 }

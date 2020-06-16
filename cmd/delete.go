@@ -32,7 +32,6 @@ Example command: ocihpc delete --stack ClusterNetwork`,
 		stackID := getStackID()
 
 		s.JobID = createDestroyJob(ctx, provider, client, stackID, stack)
-		addStackInfo(s)
 	},
 }
 
@@ -78,6 +77,7 @@ func createDestroyJob(ctx context.Context, provider common.ConfigurationProvider
 
 	fmt.Println()
 	start := time.Now().Add(time.Second * -5)
+	deployedStackName := getDeployedStackName()
 
 	for {
 		elapsed := int(time.Since(start).Seconds())
@@ -88,7 +88,7 @@ func createDestroyJob(ctx context.Context, provider common.ConfigurationProvider
 			os.Exit(1)
 		}
 
-		fmt.Printf("Deleting stack: %s [%dmin %dsec]\n", s.deployedStackName, elapsed/60, elapsed%60)
+		fmt.Printf("Deleting stack: %s [%dmin %dsec]\n", deployedStackName, elapsed/60, elapsed%60)
 		time.Sleep(15 * time.Second)
 		if readResp.LifecycleState == "SUCCEEDED" {
 			deleteStack(ctx, stackID, client, stack)
@@ -97,6 +97,7 @@ func createDestroyJob(ctx context.Context, provider common.ConfigurationProvider
 			break
 		} else if readResp.LifecycleState == "FAILED" {
 			fmt.Printf("\nDeployment failed. You can run 'ocihpc get logs' to get the logs of the failed job\n")
+			addStackInfo(s)
 			break
 		}
 	}

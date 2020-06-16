@@ -29,7 +29,7 @@ Example command: ocihpc list
 
 		respString := string(respData)
 
-		fmt.Printf("\nList of available stacks:\n")
+		fmt.Printf("\nList of available stacks:\n\n")
 		fmt.Println(respString)
 		fmt.Println()
 	},

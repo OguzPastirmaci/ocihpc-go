@@ -6,6 +6,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"os"
 	"regexp"
 	"time"
 
@@ -29,8 +30,13 @@ Example command: ocihpc get logs
 		helpers.FatalIfError(err)
 
 		ctx := context.Background()
-		jobID := getJobID()
 
+		if _, err := os.Stat(".stackinfo.json"); os.IsNotExist(err) || getJobID() == "" {
+			fmt.Printf("\nError: Couldn't find a deployed stack here. Please check if this is the correct location.\n\n")
+			os.Exit(1)
+		}
+
+		jobID := getJobID()
 		logs, _ := getTFLogs(ctx, provider, client, jobID)
 		fmt.Println(logs)
 	},

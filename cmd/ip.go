@@ -4,6 +4,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -17,11 +18,14 @@ Example command: ocihpc get ip
 
 	Run: func(cmd *cobra.Command, args []string) {
 
-		stackIP := getStackIP()
-		if stackIP != "" {
-			stackName := getSourceStackName()
-			fmt.Printf("\nYou can connect to your bastion/headnode using the following command:\n\n")
-			fmt.Printf("ssh %s@%s -i <location of the private key>\n\n", stackUser[stackName], stackIP)
+		if _, err := os.Stat(".stackinfo.json"); err == nil {
+			if getStackIP() != "" {
+				stackName := getSourceStackName()
+				fmt.Printf("\nYou can connect to your bastion/headnode using the following command:\n\n")
+				fmt.Printf("ssh %s@%s -i <location of the private key>\n\n", stackUser[stackName], getStackIP())
+			} else if getStackIP() == "" {
+				fmt.Printf("\nError: Couldn't find a deployed stack here. Please check if this is the correct location.\n\n")
+			}
 		} else {
 			fmt.Printf("\nError: Couldn't find a deployed stack here. Please check if this is the correct location.\n\n")
 		}
