@@ -6,7 +6,6 @@ import (
 	"crypto/md5"
 	"crypto/rand"
 	"crypto/rsa"
-	"crypto/sha1"
 	"crypto/x509"
 	"encoding/hex"
 	"encoding/pem"
@@ -28,22 +27,20 @@ Example command: ocihpc configure
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		//home, err := homedir.Dir()
-		//helpers.FatalIfError(err)
+		home, err := homedir.Dir()
+		helpers.FatalIfError(err)
 
-		//configfile := home + "/.oci/config"
+		configfile := home + "/.oci/config"
 
 		provider := common.DefaultConfigProvider()
 
 		if ok, _ := common.IsConfigurationProviderValid(provider); !ok {
 			//fmt.Errorf("Did not find a valid configuration file. Answer the following questions to create one:", err)
 			fmt.Printf("\nDid not find a valid configuration file. Answer the following questions to create one:\n\n")
-			createKeys()
+			createNewConfig(configfile)
 		} else {
 			fmt.Printf("\nFound existing valid configuration. Exiting configuration.\n\n")
 		}
-
-		//createKeys()
 
 	},
 }
@@ -53,12 +50,26 @@ func init() {
 
 }
 
-func createNewConfig() {
+func createNewConfig(configfile string) {
 
-	//home, err := homedir.Dir()
-	//helpers.FatalIfError(err)
+	home, err := homedir.Dir()
+	helpers.FatalIfError(err)
 
-	fmt.Println(`"The following links explain where to find the information required by this steps:
+	var user string
+	var tenancy string
+	var region string
+	var fingerprint string
+
+	privateFileName := home + "/.oci/ocihpc_key.pem"
+	publicFileName := home + "/.oci/ocihpc_key_public.pem"
+
+	file, err := os.OpenFile(configfile, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0600)
+	helpers.FatalIfError(err)
+
+	defer file.Close()
+
+	fmt.Printf(`The following links explain where to find the information required by this steps:
+
 	User API Signing Key, OCID and Tenancy OCID:
 	
     https://docs.cloud.oracle.com/Content/API/Concepts/apisigningkey.htm#Other
@@ -71,29 +82,24 @@ func createNewConfig() {
     
     https://docs.cloud.oracle.com/Content/API/Concepts/sdkconfig.htm
     
-"`)
+`)
 
-	fmt.Printf("Enter a user OCID: \n")
-	var userID string
-	fmt.Scanln(&userID)
+	fmt.Printf("\nEnter a user OCID: ")
+	fmt.Scanln(&user)
 
-	fmt.Printf("Enter a tenancy OCID: \n")
-	var tenancyID string
-	fmt.Scanln(&tenancyID)
+	fmt.Printf("\nEnter a tenancy OCID: ")
+	fmt.Scanln(&tenancy)
 
-	fmt.Printf("Enter a region: \n")
-	var region string
+	fmt.Printf("\nEnter a region: ")
 	fmt.Scanln(&region)
 
+	fingerprint = createKeys(privateFileName, publicFileName)
+
+	content := fmt.Sprintf("[DEFAULT]\nuser=%s\nfingerprint=%s\nkey_file=%s\ntenancy=%s\nregion=%s", user, fingerprint, privateFileName, tenancy, region)
+	_, err = file.WriteString(content)
 }
 
-func createKeys() {
-
-	home, err := homedir.Dir()
-	helpers.FatalIfError(err)
-
-	privateFileName := home + "/.oci/ocihpc_key.pem"
-	publicFileName := home + "/.oci/ocihpc_key_public.pem"
+func createKeys(privateFileName string, publicFileName string) string {
 
 	key, err := rsa.GenerateKey(rand.Reader, 2048)
 	helpers.FatalIfError(err)
@@ -106,7 +112,7 @@ func createKeys() {
 	defer outFile.Close()
 
 	var privateKey = &pem.Block{
-		Type:  "PRIVATE KEY",
+		Type:  "RSA PRIVATE KEY",
 		Bytes: x509.MarshalPKCS1PrivateKey(key),
 	}
 
@@ -119,7 +125,7 @@ func createKeys() {
 	helpers.FatalIfError(err)
 
 	var pemkey = &pem.Block{
-		Type:  "PUBLIC KEY",
+		Type:  "RSA PUBLIC KEY",
 		Bytes: bytes,
 	}
 
@@ -132,18 +138,12 @@ func createKeys() {
 
 	md5sum := md5.Sum(pemkey.Bytes)
 
-	hexarray := make([]string, len(md5sum))
+	fp := make([]string, len(md5sum))
 	for i, c := range md5sum {
-		hexarray[i] = hex.EncodeToString([]byte{c})
+		fp[i] = hex.EncodeToString([]byte{c})
 	}
 
-	a := strings.Join(hexarray, ":")
-	fmt.Println(a)
-	//return strings.Join(hexarray, ":")
+	fingerprint := strings.Join(fp, ":")
+	return fingerprint
 
-}
-
-func colonSeparatedString(fingerprint [sha1.Size]byte) string {
-	spaceSeparated := fmt.Sprintf("% x", fingerprint)
-	return strings.Replace(spaceSeparated, " ", ":", -1)
 }
