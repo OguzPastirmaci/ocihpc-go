@@ -127,7 +127,7 @@ For supported stacks, you can set the number of nodes you want to deploy by addi
 For example, the following command will deploy a Cluster Network with 5 nodes:
 
 ```
-$ ocihpc deploy ClusterNetwork 5
+$ ocihpc deploy --stack ClusterNetwork --node-count 5 --region us-ashburn-1 --compartment-id ocid1.compartment.oc1..6zvhnus3q
 ```
 
 INFO: The tool will generate a deployment name that consists of `<stack name>-<current directory>-<random-number>`.
@@ -135,7 +135,7 @@ INFO: The tool will generate a deployment name that consists of `<stack name>-<c
 Example:
 
 ```
-$ ocihpc deploy ClusterNetwork
+$ ocihpc deploy --stack ClusterNetwork --node-count 5 --region us-ashburn-1 --compartment-id ocid1.compartment.oc1..6zvhnus3q
 
 Starting deployment...
 
@@ -157,16 +157,14 @@ When deployment is completed, you will see the the bastion/headnode IP that you 
 Successfully deployed ClusterNetwork-ocihpc-test-7355
 
 You can connect to your head node using the command: ssh opc@$123.221.10.8 -i <location of the private key you used>
-
-You can also find the IP address of the bastion/headnode in ClusterNetwork-ocihpc-test-7355_access.info file
 ```
 
 ### 5 - Delete
-When you are done with your deployment, you can delete it by changing to the stack folder and running `ocihpc delete <stack name>`.
+When you are done with your deployment, you can delete it by changing to the stack folder and running `ocihpc delete --stack <stack name>`.
 
 Example:
 ```
-$ ocihpc delete ClusterNetwork
+$ ocihpc delete --stack ClusterNetwork
 
 Deleting ClusterNetwork-ocihpc-test-7355 [0min 0sec]
 Deleting ClusterNetwork-ocihpc-test-7355 [0min 17sec]
